@@ -1,0 +1,32 @@
+{
+  "agent": "DisruptionDetectionAgent",
+  "timestamp": "2026-03-28T20:15:20.687971",
+  "llm_model": "llama3:latest",
+  "input_flags": 5,
+  "analysis": {
+    "analysis": "Critical shortages of Heparin have been detected across multiple Indian hospitals, with the shortest remaining supply at Fortis Mumbai (1.5 days).",
+    "ranked_disruptions": [
+      {
+        "rank": 1,
+        "drug": "Heparin",
+        "hospital": "Fortis Mumbai",
+        "urgency_reason": "Shortest remaining supply.",
+        "clinical_risk": "Patients may experience severe bleeding or heart complications if not treated with Heparin in time."
+      },
+      {
+        "rank": 2,
+        "drug": "Heparin",
+        "hospital": "Manipal Bangalore",
+        "urgency_reason": "Second-shortest remaining supply.",
+        "clinical_risk": "Patients may face increased risk of bleeding and heart complications if Heparin is not available."
+      },
+      {
+        "rank": 3,
+        "drug": "Heparin",
+        "hospital": "AIIMS Delhi",
+        "urgency_reason": "Third-shortest remaining supply.",
+        "clinical_risk": "Patients may experience delayed or inadequate treatment for bleeding and heart conditions if Heparin is not available."
+      }
+    ]
+  }
+}

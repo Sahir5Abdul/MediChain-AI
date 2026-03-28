@@ -1,0 +1,24 @@
+{
+  "agent": "RippleModelingAgent",
+  "timestamp": "2026-03-28T20:15:36.808810",
+  "llm_model": "llama3:latest",
+  "analysis": {
+    "cascade_summary": "Heparin shortages will cascade as hospitals rely on each other and have alternative suppliers, while Epinephrine disruptions will compound due to similar supply chain vulnerabilities.",
+    "high_risk_scenarios": [
+      {
+        "drug": "Heparin",
+        "hospital": "Fortis Mumbai",
+        "cascade_reason": "Shortest remaining supply and reliance on Lupin, which may not be able to fulfill orders in time.",
+        "48hr_patient_harm": "Patients at risk of severe bleeding or heart complications if treatment is delayed or inadequate.",
+        "financial_exposure_inr": 1556100
+      },
+      {
+        "drug": "Heparin",
+        "hospital": "Manipal Bangalore",
+        "cascade_reason": "Second-shortest remaining supply and reliance on Sun Pharma, which may not be able to fulfill orders in time.",
+        "48hr_patient_harm": "Patients at risk of increased bleeding and heart complications if Heparin is unavailable or delayed.",
+        "financial_exposure_inr": 1911000
+      }
+    ]
+  }
+}

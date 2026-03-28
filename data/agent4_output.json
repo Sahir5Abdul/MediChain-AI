@@ -1,0 +1,32 @@
+{
+  "agent": "PlaybookGeneratorAgent",
+  "timestamp": "2026-03-28T20:16:29.611410",
+  "llm_model": "llama3:latest",
+  "playbook": {
+    "playbook_summary": "Emergency reorders and supplier negotiations are required to address Heparin shortages across multiple Indian hospitals, prioritizing Fortis Mumbai's critical shortage.",
+    "priority_actions": [
+      {
+        "priority": 1,
+        "action_type": "EMERGENCY_REORDER",
+        "drug": "Heparin",
+        "hospital": "Fortis Mumbai",
+        "action": "Place emergency order with Lupin for immediate shipment, ensuring compliance with CDSCO requirements.",
+        "responsible_team": "Procurement Team",
+        "deadline": "within 2 hours",
+        "success_criteria": "Order confirmation and shipping details received from supplier."
+      },
+      {
+        "priority": 2,
+        "action_type": "SUPPLIER_NEGOTIATION",
+        "drug": "Heparin",
+        "hospital": "Manipal Bangalore",
+        "action": "Negotiate with Sun Pharma to meet the required risk score, ensuring timely delivery of Heparin.",
+        "responsible_team": "Procurement Team",
+        "deadline": "within 24 hours",
+        "success_criteria": "Supplier confirms meeting the required risk score and agreed-upon terms."
+      }
+    ],
+    "escalation_required": false,
+    "estimated_total_resolution_hours": 26
+  }
+}

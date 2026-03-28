@@ -1,0 +1,770 @@
+{
+  "run_id": "RUN_20260326_093200",
+  "total_steps": 30,
+  "audit_trail": [
+    {
+      "run_id": "RUN_20260326_093200",
+      "step": 1,
+      "agent": "DisruptionDetectionAgent",
+      "timestamp": "2026-03-26T09:32:00.779624",
+      "input_sources": [
+        "OpenFDA shortages",
+        "OpenFDA recalls",
+        "hospital_inventory.csv",
+        "weather_risk.json"
+      ],
+      "action": "Scanned all data sources for supply chain risk signals",
+      "output_summary": {
+        "total_flags": 2062,
+        "critical": 1213,
+        "high": 479,
+        "medium": 370
+      },
+      "decision": "Escalated 1213 critical flags to RippleModelingAgent",
+      "status": "COMPLETED"
+    },
+    {
+      "run_id": "RUN_20260326_093200",
+      "step": 2,
+      "agent": "RippleModelingAgent",
+      "timestamp": "2026-03-26T09:32:00.814233",
+      "input_sources": [
+        "disruption_signals.json",
+        "hospital_inventory.csv"
+      ],
+      "action": "Modeled downstream patient and financial impact for each critical flag",
+      "output_summary": {
+        "scenarios_modeled": 27,
+        "patients_at_risk": 7522,
+        "financial_impact_inr": 52319575,
+        "emergency_reorders": 14
+      },
+      "decision": "Generated reorder recommendations for 27 scenarios",
+      "status": "COMPLETED"
+    },
+    {
+      "run_id": "RUN_20260326_093200",
+      "step": 3,
+      "agent": "ComplianceGuardrailAgent",
+      "timestamp": "2026-03-26T09:32:00.815880",
+      "input_sources": [
+        "ripple_model.json",
+        "ICD10_MAP",
+        "PROCUREMENT_RULES"
+      ],
+      "action": "Compliance check for EXPEDITE_REORDER of Heparin at AIIMS Delhi",
+      "output_summary": {
+        "icd10_code": "Z79.01",
+        "checks_passed": 2,
+        "warnings": 0,
+        "violations": 0
+      },
+      "decision": "APPROVED",
+      "violations": [],
+      "warnings": [],
+      "status": "COMPLETED"
+    },
+    {
+      "run_id": "RUN_20260326_093200",
+      "step": 3,
+      "agent": "ComplianceGuardrailAgent",
+      "timestamp": "2026-03-26T09:32:00.815891",
+      "input_sources": [
+        "ripple_model.json",
+        "ICD10_MAP",
+        "PROCUREMENT_RULES"
+      ],
+      "action": "Compliance check for EMERGENCY_REORDER of Heparin at Fortis Mumbai",
+      "output_summary": {
+        "icd10_code": "Z79.01",
+        "checks_passed": 2,
+        "warnings": 1,
+        "violations": 0
+      },
+      "decision": "APPROVED_WITH_WARNINGS",
+      "violations": [],
+      "warnings": [
+        "CDSCO approval required before executing emergency procurement"
+      ],
+      "status": "COMPLETED"
+    },
+    {
+      "run_id": "RUN_20260326_093200",
+      "step": 3,
+      "agent": "ComplianceGuardrailAgent",
+      "timestamp": "2026-03-26T09:32:00.815897",
+      "input_sources": [
+        "ripple_model.json",
+        "ICD10_MAP",
+        "PROCUREMENT_RULES"
+      ],
+      "action": "Compliance check for EMERGENCY_REORDER of Heparin at Manipal Bangalore",
+      "output_summary": {
+        "icd10_code": "Z79.01",
+        "checks_passed": 1,
+        "warnings": 1,
+        "violations": 1
+      },
+      "decision": "BLOCKED",
+      "violations": [
+        "Supplier risk score 0.85 exceeds threshold 0.6"
+      ],
+      "warnings": [
+        "CDSCO approval required before executing emergency procurement"
+      ],
+      "status": "COMPLETED"
+    },
+    {
+      "run_id": "RUN_20260326_093200",
+      "step": 3,
+      "agent": "ComplianceGuardrailAgent",
+      "timestamp": "2026-03-26T09:32:00.815900",
+      "input_sources": [
+        "ripple_model.json",
+        "ICD10_MAP",
+        "PROCUREMENT_RULES"
+      ],
+      "action": "Compliance check for EMERGENCY_REORDER of Methotrexate at Apollo Chennai",
+      "output_summary": {
+        "icd10_code": "Z79.899",
+        "checks_passed": 1,
+        "warnings": 1,
+        "violations": 1
+      },
+      "decision": "BLOCKED",
+      "violations": [
+        "Supplier risk score 0.7 exceeds threshold 0.6"
+      ],
+      "warnings": [
+        "CDSCO approval required before executing emergency procurement"
+      ],
+      "status": "COMPLETED"
+    },
+    {
+      "run_id": "RUN_20260326_093200",
+      "step": 3,
+      "agent": "ComplianceGuardrailAgent",
+      "timestamp": "2026-03-26T09:32:00.815903",
+      "input_sources": [
+        "ripple_model.json",
+        "ICD10_MAP",
+        "PROCUREMENT_RULES"
+      ],
+      "action": "Compliance check for EXPEDITE_REORDER of Methotrexate at AIIMS Delhi",
+      "output_summary": {
+        "icd10_code": "Z79.899",
+        "checks_passed": 2,
+        "warnings": 0,
+        "violations": 0
+      },
+      "decision": "APPROVED",
+      "violations": [],
+      "warnings": [],
+      "status": "COMPLETED"
+    },
+    {
+      "run_id": "RUN_20260326_093200",
+      "step": 3,
+      "agent": "ComplianceGuardrailAgent",
+      "timestamp": "2026-03-26T09:32:00.815905",
+      "input_sources": [
+        "ripple_model.json",
+        "ICD10_MAP",
+        "PROCUREMENT_RULES"
+      ],
+      "action": "Compliance check for EMERGENCY_REORDER of Methotrexate at Fortis Mumbai",
+      "output_summary": {
+        "icd10_code": "Z79.899",
+        "checks_passed": 2,
+        "warnings": 1,
+        "violations": 0
+      },
+      "decision": "APPROVED_WITH_WARNINGS",
+      "violations": [],
+      "warnings": [
+        "CDSCO approval required before executing emergency procurement"
+      ],
+      "status": "COMPLETED"
+    },
+    {
+      "run_id": "RUN_20260326_093200",
+      "step": 3,
+      "agent": "ComplianceGuardrailAgent",
+      "timestamp": "2026-03-26T09:32:00.815908",
+      "input_sources": [
+        "ripple_model.json",
+        "ICD10_MAP",
+        "PROCUREMENT_RULES"
+      ],
+      "action": "Compliance check for EXPEDITE_REORDER of Methotrexate at Manipal Bangalore",
+      "output_summary": {
+        "icd10_code": "Z79.899",
+        "checks_passed": 1,
+        "warnings": 0,
+        "violations": 1
+      },
+      "decision": "BLOCKED",
+      "violations": [
+        "Supplier risk score 0.85 exceeds threshold 0.7"
+      ],
+      "warnings": [],
+      "status": "COMPLETED"
+    },
+    {
+      "run_id": "RUN_20260326_093200",
+      "step": 3,
+      "agent": "ComplianceGuardrailAgent",
+      "timestamp": "2026-03-26T09:32:00.815911",
+      "input_sources": [
+        "ripple_model.json",
+        "ICD10_MAP",
+        "PROCUREMENT_RULES"
+      ],
+      "action": "Compliance check for EMERGENCY_REORDER of Epinephrine at Apollo Chennai",
+      "output_summary": {
+        "icd10_code": "T48.291",
+        "checks_passed": 1,
+        "warnings": 1,
+        "violations": 1
+      },
+      "decision": "BLOCKED",
+      "violations": [
+        "Supplier risk score 0.85 exceeds threshold 0.6"
+      ],
+      "warnings": [
+        "CDSCO approval required before executing emergency procurement"
+      ],
+      "status": "COMPLETED"
+    },
+    {
+      "run_id": "RUN_20260326_093200",
+      "step": 3,
+      "agent": "ComplianceGuardrailAgent",
+      "timestamp": "2026-03-26T09:32:00.815913",
+      "input_sources": [
+        "ripple_model.json",
+        "ICD10_MAP",
+        "PROCUREMENT_RULES"
+      ],
+      "action": "Compliance check for EMERGENCY_REORDER of Epinephrine at Fortis Mumbai",
+      "output_summary": {
+        "icd10_code": "T48.291",
+        "checks_passed": 1,
+        "warnings": 1,
+        "violations": 1
+      },
+      "decision": "BLOCKED",
+      "violations": [
+        "Supplier risk score 0.85 exceeds threshold 0.6"
+      ],
+      "warnings": [
+        "CDSCO approval required before executing emergency procurement"
+      ],
+      "status": "COMPLETED"
+    },
+    {
+      "run_id": "RUN_20260326_093200",
+      "step": 3,
+      "agent": "ComplianceGuardrailAgent",
+      "timestamp": "2026-03-26T09:32:00.815916",
+      "input_sources": [
+        "ripple_model.json",
+        "ICD10_MAP",
+        "PROCUREMENT_RULES"
+      ],
+      "action": "Compliance check for EXPEDITE_REORDER of Epinephrine at KIMS Hyderabad",
+      "output_summary": {
+        "icd10_code": "T48.291",
+        "checks_passed": 2,
+        "warnings": 0,
+        "violations": 0
+      },
+      "decision": "APPROVED",
+      "violations": [],
+      "warnings": [],
+      "status": "COMPLETED"
+    },
+    {
+      "run_id": "RUN_20260326_093200",
+      "step": 3,
+      "agent": "ComplianceGuardrailAgent",
+      "timestamp": "2026-03-26T09:32:00.815920",
+      "input_sources": [
+        "ripple_model.json",
+        "ICD10_MAP",
+        "PROCUREMENT_RULES"
+      ],
+      "action": "Compliance check for EMERGENCY_REORDER of Morphine at AIIMS Delhi",
+      "output_summary": {
+        "icd10_code": "Z79.891",
+        "checks_passed": 3,
+        "warnings": 2,
+        "violations": 0
+      },
+      "decision": "APPROVED_WITH_WARNINGS",
+      "violations": [],
+      "warnings": [
+        "Morphine is a controlled substance (ICD-10: Z79.891) \u2014 NDPS Act compliance required",
+        "CDSCO approval required before executing emergency procurement"
+      ],
+      "status": "COMPLETED"
+    },
+    {
+      "run_id": "RUN_20260326_093200",
+      "step": 3,
+      "agent": "ComplianceGuardrailAgent",
+      "timestamp": "2026-03-26T09:32:00.815923",
+      "input_sources": [
+        "ripple_model.json",
+        "ICD10_MAP",
+        "PROCUREMENT_RULES"
+      ],
+      "action": "Compliance check for EMERGENCY_REORDER of Morphine at Manipal Bangalore",
+      "output_summary": {
+        "icd10_code": "Z79.891",
+        "checks_passed": 3,
+        "warnings": 2,
+        "violations": 0
+      },
+      "decision": "APPROVED_WITH_WARNINGS",
+      "violations": [],
+      "warnings": [
+        "Morphine is a controlled substance (ICD-10: Z79.891) \u2014 NDPS Act compliance required",
+        "CDSCO approval required before executing emergency procurement"
+      ],
+      "status": "COMPLETED"
+    },
+    {
+      "run_id": "RUN_20260326_093200",
+      "step": 3,
+      "agent": "ComplianceGuardrailAgent",
+      "timestamp": "2026-03-26T09:32:00.815925",
+      "input_sources": [
+        "ripple_model.json",
+        "ICD10_MAP",
+        "PROCUREMENT_RULES"
+      ],
+      "action": "Compliance check for EXPEDITE_REORDER of Morphine at KIMS Hyderabad",
+      "output_summary": {
+        "icd10_code": "Z79.891",
+        "checks_passed": 3,
+        "warnings": 0,
+        "violations": 0
+      },
+      "decision": "APPROVED",
+      "violations": [],
+      "warnings": [],
+      "status": "COMPLETED"
+    },
+    {
+      "run_id": "RUN_20260326_093200",
+      "step": 3,
+      "agent": "ComplianceGuardrailAgent",
+      "timestamp": "2026-03-26T09:32:00.815928",
+      "input_sources": [
+        "ripple_model.json",
+        "ICD10_MAP",
+        "PROCUREMENT_RULES"
+      ],
+      "action": "Compliance check for EMERGENCY_REORDER of Dexamethasone at Apollo Chennai",
+      "output_summary": {
+        "icd10_code": "Z79.52",
+        "checks_passed": 1,
+        "warnings": 1,
+        "violations": 1
+      },
+      "decision": "BLOCKED",
+      "violations": [
+        "Supplier risk score 0.7 exceeds threshold 0.6"
+      ],
+      "warnings": [
+        "CDSCO approval required before executing emergency procurement"
+      ],
+      "status": "COMPLETED"
+    },
+    {
+      "run_id": "RUN_20260326_093200",
+      "step": 3,
+      "agent": "ComplianceGuardrailAgent",
+      "timestamp": "2026-03-26T09:32:00.815930",
+      "input_sources": [
+        "ripple_model.json",
+        "ICD10_MAP",
+        "PROCUREMENT_RULES"
+      ],
+      "action": "Compliance check for EMERGENCY_REORDER of Dexamethasone at AIIMS Delhi",
+      "output_summary": {
+        "icd10_code": "Z79.52",
+        "checks_passed": 2,
+        "warnings": 1,
+        "violations": 0
+      },
+      "decision": "APPROVED_WITH_WARNINGS",
+      "violations": [],
+      "warnings": [
+        "CDSCO approval required before executing emergency procurement"
+      ],
+      "status": "COMPLETED"
+    },
+    {
+      "run_id": "RUN_20260326_093200",
+      "step": 3,
+      "agent": "ComplianceGuardrailAgent",
+      "timestamp": "2026-03-26T09:32:00.815933",
+      "input_sources": [
+        "ripple_model.json",
+        "ICD10_MAP",
+        "PROCUREMENT_RULES"
+      ],
+      "action": "Compliance check for EMERGENCY_REORDER of Dexamethasone at KIMS Hyderabad",
+      "output_summary": {
+        "icd10_code": "Z79.52",
+        "checks_passed": 2,
+        "warnings": 1,
+        "violations": 0
+      },
+      "decision": "APPROVED_WITH_WARNINGS",
+      "violations": [],
+      "warnings": [
+        "CDSCO approval required before executing emergency procurement"
+      ],
+      "status": "COMPLETED"
+    },
+    {
+      "run_id": "RUN_20260326_093200",
+      "step": 3,
+      "agent": "ComplianceGuardrailAgent",
+      "timestamp": "2026-03-26T09:32:00.815935",
+      "input_sources": [
+        "ripple_model.json",
+        "ICD10_MAP",
+        "PROCUREMENT_RULES"
+      ],
+      "action": "Compliance check for EMERGENCY_REORDER of Furosemide at Fortis Mumbai",
+      "output_summary": {
+        "icd10_code": "Z79.899",
+        "checks_passed": 1,
+        "warnings": 1,
+        "violations": 1
+      },
+      "decision": "BLOCKED",
+      "violations": [
+        "Supplier risk score 0.85 exceeds threshold 0.6"
+      ],
+      "warnings": [
+        "CDSCO approval required before executing emergency procurement"
+      ],
+      "status": "COMPLETED"
+    },
+    {
+      "run_id": "RUN_20260326_093200",
+      "step": 3,
+      "agent": "ComplianceGuardrailAgent",
+      "timestamp": "2026-03-26T09:32:00.815937",
+      "input_sources": [
+        "ripple_model.json",
+        "ICD10_MAP",
+        "PROCUREMENT_RULES"
+      ],
+      "action": "Compliance check for EXPEDITE_REORDER of Insulin at Apollo Chennai",
+      "output_summary": {
+        "icd10_code": "Z79.4",
+        "checks_passed": 2,
+        "warnings": 0,
+        "violations": 0
+      },
+      "decision": "APPROVED",
+      "violations": [],
+      "warnings": [],
+      "status": "COMPLETED"
+    },
+    {
+      "run_id": "RUN_20260326_093200",
+      "step": 3,
+      "agent": "ComplianceGuardrailAgent",
+      "timestamp": "2026-03-26T09:32:00.815940",
+      "input_sources": [
+        "ripple_model.json",
+        "ICD10_MAP",
+        "PROCUREMENT_RULES"
+      ],
+      "action": "Compliance check for EXPEDITE_REORDER of Insulin at AIIMS Delhi",
+      "output_summary": {
+        "icd10_code": "Z79.4",
+        "checks_passed": 1,
+        "warnings": 0,
+        "violations": 1
+      },
+      "decision": "BLOCKED",
+      "violations": [
+        "Supplier risk score 0.85 exceeds threshold 0.7"
+      ],
+      "warnings": [],
+      "status": "COMPLETED"
+    },
+    {
+      "run_id": "RUN_20260326_093200",
+      "step": 3,
+      "agent": "ComplianceGuardrailAgent",
+      "timestamp": "2026-03-26T09:32:00.815943",
+      "input_sources": [
+        "ripple_model.json",
+        "ICD10_MAP",
+        "PROCUREMENT_RULES"
+      ],
+      "action": "Compliance check for EMERGENCY_REORDER of Insulin at Manipal Bangalore",
+      "output_summary": {
+        "icd10_code": "Z79.4",
+        "checks_passed": 1,
+        "warnings": 1,
+        "violations": 1
+      },
+      "decision": "BLOCKED",
+      "violations": [
+        "Supplier risk score 0.85 exceeds threshold 0.6"
+      ],
+      "warnings": [
+        "CDSCO approval required before executing emergency procurement"
+      ],
+      "status": "COMPLETED"
+    },
+    {
+      "run_id": "RUN_20260326_093200",
+      "step": 3,
+      "agent": "ComplianceGuardrailAgent",
+      "timestamp": "2026-03-26T09:32:00.815945",
+      "input_sources": [
+        "ripple_model.json",
+        "ICD10_MAP",
+        "PROCUREMENT_RULES"
+      ],
+      "action": "Compliance check for EXPEDITE_REORDER of Vancomycin at Apollo Chennai",
+      "output_summary": {
+        "icd10_code": "Z79.2",
+        "checks_passed": 2,
+        "warnings": 0,
+        "violations": 0
+      },
+      "decision": "APPROVED",
+      "violations": [],
+      "warnings": [],
+      "status": "COMPLETED"
+    },
+    {
+      "run_id": "RUN_20260326_093200",
+      "step": 3,
+      "agent": "ComplianceGuardrailAgent",
+      "timestamp": "2026-03-26T09:32:00.815947",
+      "input_sources": [
+        "ripple_model.json",
+        "ICD10_MAP",
+        "PROCUREMENT_RULES"
+      ],
+      "action": "Compliance check for EXPEDITE_REORDER of Vancomycin at AIIMS Delhi",
+      "output_summary": {
+        "icd10_code": "Z79.2",
+        "checks_passed": 2,
+        "warnings": 0,
+        "violations": 0
+      },
+      "decision": "APPROVED",
+      "violations": [],
+      "warnings": [],
+      "status": "COMPLETED"
+    },
+    {
+      "run_id": "RUN_20260326_093200",
+      "step": 3,
+      "agent": "ComplianceGuardrailAgent",
+      "timestamp": "2026-03-26T09:32:00.815950",
+      "input_sources": [
+        "ripple_model.json",
+        "ICD10_MAP",
+        "PROCUREMENT_RULES"
+      ],
+      "action": "Compliance check for EXPEDITE_REORDER of Vancomycin at Manipal Bangalore",
+      "output_summary": {
+        "icd10_code": "Z79.2",
+        "checks_passed": 2,
+        "warnings": 0,
+        "violations": 0
+      },
+      "decision": "APPROVED",
+      "violations": [],
+      "warnings": [],
+      "status": "COMPLETED"
+    },
+    {
+      "run_id": "RUN_20260326_093200",
+      "step": 3,
+      "agent": "ComplianceGuardrailAgent",
+      "timestamp": "2026-03-26T09:32:00.815952",
+      "input_sources": [
+        "ripple_model.json",
+        "ICD10_MAP",
+        "PROCUREMENT_RULES"
+      ],
+      "action": "Compliance check for EMERGENCY_REORDER of Vancomycin at KIMS Hyderabad",
+      "output_summary": {
+        "icd10_code": "Z79.2",
+        "checks_passed": 2,
+        "warnings": 1,
+        "violations": 0
+      },
+      "decision": "APPROVED_WITH_WARNINGS",
+      "violations": [],
+      "warnings": [
+        "CDSCO approval required before executing emergency procurement"
+      ],
+      "status": "COMPLETED"
+    },
+    {
+      "run_id": "RUN_20260326_093200",
+      "step": 3,
+      "agent": "ComplianceGuardrailAgent",
+      "timestamp": "2026-03-26T09:32:00.815954",
+      "input_sources": [
+        "ripple_model.json",
+        "ICD10_MAP",
+        "PROCUREMENT_RULES"
+      ],
+      "action": "Compliance check for SCHEDULE_REORDER of Insulin at KIMS Hyderabad",
+      "output_summary": {
+        "icd10_code": "Z79.4",
+        "checks_passed": 2,
+        "warnings": 0,
+        "violations": 0
+      },
+      "decision": "APPROVED",
+      "violations": [],
+      "warnings": [],
+      "status": "COMPLETED"
+    },
+    {
+      "run_id": "RUN_20260326_093200",
+      "step": 3,
+      "agent": "ComplianceGuardrailAgent",
+      "timestamp": "2026-03-26T09:32:00.815960",
+      "input_sources": [
+        "ripple_model.json",
+        "ICD10_MAP",
+        "PROCUREMENT_RULES"
+      ],
+      "action": "Compliance check for EXPEDITE_REORDER of Cisplatin at KIMS Hyderabad",
+      "output_summary": {
+        "icd10_code": "Z79.899",
+        "checks_passed": 2,
+        "warnings": 0,
+        "violations": 0
+      },
+      "decision": "APPROVED",
+      "violations": [],
+      "warnings": [],
+      "status": "COMPLETED"
+    },
+    {
+      "run_id": "RUN_20260326_093200",
+      "step": 3,
+      "agent": "ComplianceGuardrailAgent",
+      "timestamp": "2026-03-26T09:32:00.815962",
+      "input_sources": [
+        "ripple_model.json",
+        "ICD10_MAP",
+        "PROCUREMENT_RULES"
+      ],
+      "action": "Compliance check for EXPEDITE_REORDER of Methotrexate at KIMS Hyderabad",
+      "output_summary": {
+        "icd10_code": "Z79.899",
+        "checks_passed": 2,
+        "warnings": 0,
+        "violations": 0
+      },
+      "decision": "APPROVED",
+      "violations": [],
+      "warnings": [],
+      "status": "COMPLETED"
+    },
+    {
+      "run_id": "RUN_20260326_093200",
+      "step": 4,
+      "agent": "HumanApprovalGate",
+      "timestamp": "2026-03-26T09:32:00.817360",
+      "input_sources": [
+        "compliance_results.json"
+      ],
+      "action": "Routed actions based on compliance outcome",
+      "output_summary": {
+        "auto_approved": 11,
+        "pending_human_review": 7,
+        "blocked_requires_intervention": 9
+      },
+      "decision": "11 actions auto-executed | 7 sent for human approval | 9 blocked pending intervention",
+      "blocked_items": [
+        {
+          "drug": "Heparin",
+          "hospital": "Manipal Bangalore",
+          "reason": [
+            "Supplier risk score 0.85 exceeds threshold 0.6"
+          ]
+        },
+        {
+          "drug": "Methotrexate",
+          "hospital": "Apollo Chennai",
+          "reason": [
+            "Supplier risk score 0.7 exceeds threshold 0.6"
+          ]
+        },
+        {
+          "drug": "Methotrexate",
+          "hospital": "Manipal Bangalore",
+          "reason": [
+            "Supplier risk score 0.85 exceeds threshold 0.7"
+          ]
+        },
+        {
+          "drug": "Epinephrine",
+          "hospital": "Apollo Chennai",
+          "reason": [
+            "Supplier risk score 0.85 exceeds threshold 0.6"
+          ]
+        },
+        {
+          "drug": "Epinephrine",
+          "hospital": "Fortis Mumbai",
+          "reason": [
+            "Supplier risk score 0.85 exceeds threshold 0.6"
+          ]
+        },
+        {
+          "drug": "Dexamethasone",
+          "hospital": "Apollo Chennai",
+          "reason": [
+            "Supplier risk score 0.7 exceeds threshold 0.6"
+          ]
+        },
+        {
+          "drug": "Furosemide",
+          "hospital": "Fortis Mumbai",
+          "reason": [
+            "Supplier risk score 0.85 exceeds threshold 0.6"
+          ]
+        },
+        {
+          "drug": "Insulin",
+          "hospital": "AIIMS Delhi",
+          "reason": [
+            "Supplier risk score 0.85 exceeds threshold 0.7"
+          ]
+        },
+        {
+          "drug": "Insulin",
+          "hospital": "Manipal Bangalore",
+          "reason": [
+            "Supplier risk score 0.85 exceeds threshold 0.6"
+          ]
+        }
+      ],
+      "status": "AWAITING_HUMAN_INPUT"
+    }
+  ]
+}

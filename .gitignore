@@ -1,0 +1,11 @@
+__pycache__/          ← cache, never push
+data/                 ← generated at runtime
+audit_log.json        ← generated at runtime
+compliance_results.json
+disruption_signals.json
+hospital_inventory.csv
+hospital_inventory_timeseries.csv  ← 3.2MB, too large
+recalls.json          ← 762KB raw FDA data
+ripple_model.json
+shortages.json        ← 903KB raw FDA data
+weather_risk.json

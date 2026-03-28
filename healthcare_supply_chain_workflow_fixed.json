@@ -1,0 +1,375 @@
+{
+  "name": "Healthcare Supply Chain AI - Multi Agent Pipeline",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "run-agents",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "1a2b3c4d-0001-0001-0001-000000000001",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 400],
+      "webhookId": "healthcare-supply-chain-trigger"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://indivisibly-exemptible-guillermina.ngrok-free.dev/run-pipeline",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "ngrok-skip-browser-warning",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 300000
+        }
+      },
+      "id": "1a2b3c4d-0002-0002-0002-000000000002",
+      "name": "Run Data Pipeline",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 400]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://indivisibly-exemptible-guillermina.ngrok-free.dev/agent/disruption",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "ngrok-skip-browser-warning",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 300000
+        }
+      },
+      "id": "1a2b3c4d-0003-0003-0003-000000000003",
+      "name": "Agent 1 - Disruption Detection",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 400]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://indivisibly-exemptible-guillermina.ngrok-free.dev/agent/ripple",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "ngrok-skip-browser-warning",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 300000
+        }
+      },
+      "id": "1a2b3c4d-0004-0004-0004-000000000004",
+      "name": "Agent 2 - Ripple Modeling",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [900, 400]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://indivisibly-exemptible-guillermina.ngrok-free.dev/agent/compliance",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "ngrok-skip-browser-warning",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 300000
+        }
+      },
+      "id": "1a2b3c4d-0005-0005-0005-000000000005",
+      "name": "Agent 3 - Compliance Guardrail",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 400]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://indivisibly-exemptible-guillermina.ngrok-free.dev/agent/playbook",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "ngrok-skip-browser-warning",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 300000
+        }
+      },
+      "id": "1a2b3c4d-0006-0006-0006-000000000006",
+      "name": "Agent 4 - Playbook Generator",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1340, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "const playbook = $input.first().json;\nconst compliance = $('Agent 3 - Compliance Guardrail').first().json;\n\nconst blocked = compliance.analysis?.blocked_resolutions || [];\nconst warned = [];\n\nif (compliance.analysis && compliance.analysis.compliance_summary) {\n  return [{\n    json: {\n      requires_human_approval: blocked.length > 0,\n      blocked_count: blocked.length,\n      blocked_items: blocked.map(b => ({\n        drug: b.drug,\n        hospital: b.hospital,\n        violation: b.violation_explanation,\n        needs_govt: b.needs_govt_intervention\n      })),\n      playbook_summary: playbook.playbook?.playbook_summary || '',\n      escalation_required: playbook.playbook?.escalation_required || false,\n      timestamp: new Date().toISOString()\n    }\n  }];\n}\n\nreturn [{ json: { requires_human_approval: false, blocked_count: 0, timestamp: new Date().toISOString() } }];"
+      },
+      "id": "1a2b3c4d-0007-0007-0007-000000000007",
+      "name": "Check Human Approval Required",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1560, 400]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "condition-1",
+              "leftValue": "={{ $json.requires_human_approval }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "1a2b3c4d-0008-0008-0008-000000000008",
+      "name": "Needs Human Approval?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1780, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst NGROK_BASE = 'https://indivisibly-exemptible-guillermina.ngrok-free.dev';\n\nconst emailBody = `\nHEALTHCARE SUPPLY CHAIN ALERT - HUMAN APPROVAL REQUIRED\n========================================================\n\nTimestamp: ${data.timestamp}\nBlocked Actions: ${data.blocked_count}\nEscalation Required: ${data.escalation_required}\n\nPlaybook Summary:\n${data.playbook_summary}\n\nBlocked Items Requiring Your Review:\n${(data.blocked_items || []).map((item, i) => `\n${i+1}. ${item.drug} @ ${item.hospital}\n   Violation: ${item.violation}\n   Needs Government Intervention: ${item.needs_govt}\n`).join('')}\n\nTo approve: POST ${NGROK_BASE}/approve/{drug}/{hospital}\nTo block:   POST ${NGROK_BASE}/block/{drug}/{hospital}\n\nView full audit log: ${NGROK_BASE}/audit\nView dashboard:      ${NGROK_BASE}/docs\n`;\n\nreturn [{\n  json: {\n    subject: `[URGENT] Supply Chain Alert - ${data.blocked_count} actions blocked`,\n    body: emailBody,\n    blocked_items: data.blocked_items || [],\n    timestamp: data.timestamp\n  }\n}];"
+      },
+      "id": "1a2b3c4d-0009-0009-0009-000000000009",
+      "name": "Prepare Approval Notification",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2000, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\n\nreturn [{\n  json: {\n    status: 'pipeline_completed',\n    message: 'All agents ran successfully. No human approval required.',\n    timestamp: data.timestamp,\n    next_run: 'Schedule next run or trigger manually via POST /run-agents'\n  }\n}];"
+      },
+      "id": "1a2b3c4d-0010-0010-0010-000000000010",
+      "name": "Auto Complete",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2000, 500]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://indivisibly-exemptible-guillermina.ngrok-free.dev/summary",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "ngrok-skip-browser-warning",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 300000
+        }
+      },
+      "id": "1a2b3c4d-0011-0011-0011-000000000011",
+      "name": "Fetch Final Summary",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2220, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "const summary = $input.first().json;\nconst disruption = $('Agent 1 - Disruption Detection').first().json;\nconst ripple = $('Agent 2 - Ripple Modeling').first().json;\nconst compliance = $('Agent 3 - Compliance Guardrail').first().json;\nconst playbook = $('Agent 4 - Playbook Generator').first().json;\n\nreturn [{\n  json: {\n    run_complete: true,\n    timestamp: new Date().toISOString(),\n    pipeline_summary: summary,\n    agent_outputs: {\n      disruption_analysis: disruption.analysis?.analysis || '',\n      cascade_summary: ripple.analysis?.cascade_summary || '',\n      compliance_summary: compliance.analysis?.compliance_summary || '',\n      playbook_summary: playbook.playbook?.playbook_summary || ''\n    },\n    metrics: {\n      total_flags: summary.disruption?.total_flags || 0,\n      critical_flags: summary.disruption?.critical || 0,\n      patients_at_risk: summary.ripple?.patients_at_risk || 0,\n      financial_impact_inr: summary.ripple?.financial_impact_inr || 0,\n      approved: summary.compliance?.approved || 0,\n      warned: summary.compliance?.warned || 0,\n      blocked: summary.compliance?.blocked || 0\n    }\n  }\n}];"
+      },
+      "id": "1a2b3c4d-0012-0012-0012-000000000012",
+      "name": "Build Final Report",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2440, 400]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Run Data Pipeline",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run Data Pipeline": {
+      "main": [
+        [
+          {
+            "node": "Agent 1 - Disruption Detection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent 1 - Disruption Detection": {
+      "main": [
+        [
+          {
+            "node": "Agent 2 - Ripple Modeling",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent 2 - Ripple Modeling": {
+      "main": [
+        [
+          {
+            "node": "Agent 3 - Compliance Guardrail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent 3 - Compliance Guardrail": {
+      "main": [
+        [
+          {
+            "node": "Agent 4 - Playbook Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent 4 - Playbook Generator": {
+      "main": [
+        [
+          {
+            "node": "Check Human Approval Required",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Human Approval Required": {
+      "main": [
+        [
+          {
+            "node": "Needs Human Approval?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Needs Human Approval?": {
+      "main": [
+        [
+          {
+            "node": "Prepare Approval Notification",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Auto Complete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Approval Notification": {
+      "main": [
+        [
+          {
+            "node": "Fetch Final Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Auto Complete": {
+      "main": [
+        [
+          {
+            "node": "Fetch Final Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Final Summary": {
+      "main": [
+        [
+          {
+            "node": "Build Final Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2026-03-26T00:00:00.000Z",
+      "updatedAt": "2026-03-26T00:00:00.000Z",
+      "id": "tag-healthcare-001",
+      "name": "healthcare-supply-chain"
+    }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2026-03-26T00:00:00.000Z",
+  "versionId": "2"
+}

@@ -1,0 +1,70 @@
+{
+  "agent": "ComplianceGuardrailAgent",
+  "timestamp": "2026-03-28T20:16:11.143476",
+  "llm_model": "llama3:latest",
+  "analysis": {
+    "compliance_summary": "The procurement system has blocked several emergency reorders due to supplier risk scores exceeding thresholds and CDSCO approval requirements.",
+    "blocked_resolutions": [
+      {
+        "drug": "Heparin",
+        "hospital": "Manipal Bangalore",
+        "violation_explanation": "Supplier risk score (0.85) exceeds the allowed threshold (0.6) for emergency procurement of Heparin.",
+        "resolution_steps": [
+          "Review and approve CDSCO application",
+          "Negotiate with supplier to meet the required risk score",
+          "Verify compliance before executing the emergency reorder"
+        ],
+        "needs_govt_intervention": false,
+        "estimated_resolution_hours": 24
+      },
+      {
+        "drug": "Epinephrine",
+        "hospital": "Apollo Chennai",
+        "violation_explanation": "Supplier risk score (0.85) exceeds the allowed threshold (0.6) for emergency procurement of Epinephrine.",
+        "resolution_steps": [
+          "Review and approve CDSCO application",
+          "Negotiate with supplier to meet the required risk score",
+          "Verify compliance before executing the emergency reorder"
+        ],
+        "needs_govt_intervention": false,
+        "estimated_resolution_hours": 24
+      },
+      {
+        "drug": "Epinephrine",
+        "hospital": "Fortis Mumbai",
+        "violation_explanation": "Supplier risk score (0.85) exceeds the allowed threshold (0.6) for emergency procurement of Epinephrine.",
+        "resolution_steps": [
+          "Review and approve CDSCO application",
+          "Negotiate with supplier to meet the required risk score",
+          "Verify compliance before executing the emergency reorder"
+        ],
+        "needs_govt_intervention": false,
+        "estimated_resolution_hours": 24
+      },
+      {
+        "drug": "Insulin",
+        "hospital": "AIIMS Delhi",
+        "violation_explanation": "Supplier risk score (0.85) exceeds the allowed threshold (0.7) for emergency procurement of Insulin.",
+        "resolution_steps": [
+          "Review and approve CDSCO application",
+          "Negotiate with supplier to meet the required risk score",
+          "Verify compliance before executing the emergency reorder"
+        ],
+        "needs_govt_intervention": false,
+        "estimated_resolution_hours": 24
+      },
+      {
+        "drug": "Insulin",
+        "hospital": "Manipal Bangalore",
+        "violation_explanation": "Supplier risk score (0.85) exceeds the allowed threshold (0.6) for emergency procurement of Insulin.",
+        "resolution_steps": [
+          "Review and approve CDSCO application",
+          "Negotiate with supplier to meet the required risk score",
+          "Verify compliance before executing the emergency reorder"
+        ],
+        "needs_govt_intervention": false,
+        "estimated_resolution_hours": 24
+      }
+    ]
+  }
+}

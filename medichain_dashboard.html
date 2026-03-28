@@ -1,0 +1,1553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MediChain AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --font:'Quicksand',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+  --bg:#c8d8f0;
+  --text:#0a1628;--text2:#2d4a7a;--text3:#6b89b8;
+  --accent:#1557e8;--accent2:#0d3fb5;
+  --red:#dc2626;--amber:#b45309;--green:#15803d;--purple:#6d28d9;
+  --glass:rgba(255,255,255,0.62);
+  --glass-border:rgba(255,255,255,0.85);
+  --glass-inner:inset 0 1px 0 rgba(255,255,255,0.95),inset 0 -1px 0 rgba(255,255,255,0.3);
+  --shadow:0 4px 28px rgba(10,40,120,0.13);
+  --shadow2:0 8px 40px rgba(10,40,120,0.2);
+  --blur:blur(22px);
+}
+body{
+  font-family:var(--font);background:var(--bg);color:var(--text);
+  min-height:100vh;font-size:14px;overflow:hidden;font-weight:500;
+  background:
+    radial-gradient(ellipse 90% 70% at 15% 5%,rgba(130,180,255,0.45) 0%,transparent 55%),
+    radial-gradient(ellipse 70% 60% at 85% 90%,rgba(100,150,255,0.35) 0%,transparent 55%),
+    radial-gradient(ellipse 50% 50% at 60% 40%,rgba(180,210,255,0.25) 0%,transparent 60%),
+    linear-gradient(160deg,#b8cef0 0%,#cfddf5 40%,#dde8f8 100%);
+}
+body::before,body::after{content:'';position:fixed;border-radius:50%;pointer-events:none;z-index:0}
+body::before{width:600px;height:600px;background:radial-gradient(circle,rgba(80,140,255,0.18),transparent 70%);top:-200px;left:-150px}
+body::after{width:500px;height:500px;background:radial-gradient(circle,rgba(100,160,255,0.15),transparent 70%);bottom:-180px;right:-120px}
+
+.screen{display:none;height:100vh;overflow:hidden;position:relative;z-index:1}
+.screen.active{display:flex;flex-direction:column}
+
+/* ══ LOGIN ══ */
+#login-screen{align-items:center;justify-content:center;overflow:hidden}
+.login-scene{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.scene-orb{position:absolute;border-radius:50%;filter:blur(80px)}
+.scene-orb-1{width:520px;height:520px;background:rgba(80,140,255,0.28);top:-120px;left:-100px;animation:orbFloat 8s ease-in-out infinite}
+.scene-orb-2{width:400px;height:400px;background:rgba(120,180,255,0.2);bottom:-100px;right:-80px;animation:orbFloat 10s ease-in-out infinite reverse}
+.scene-orb-3{width:280px;height:280px;background:rgba(160,200,255,0.18);top:50%;left:60%;animation:orbFloat 12s ease-in-out infinite 2s}
+@keyframes orbFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-30px) scale(1.05)}}
+.login-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(100,150,220,0.08) 1px,transparent 1px),linear-gradient(90deg,rgba(100,150,220,0.08) 1px,transparent 1px);background-size:48px 48px}
+.login-wrap{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:32px}
+.login-hero{text-align:center}
+.login-hero-logo{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:12px}
+.login-hero-wordmark{font-size:32px;font-weight:700;letter-spacing:-.5px;color:var(--text)}
+.login-hero-wordmark span{color:var(--accent)}
+.login-hero-sub{font-size:13px;color:var(--text3);font-weight:500;letter-spacing:.3px}
+.login-card{background:var(--glass);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--glass-border);border-radius:24px;padding:36px 40px;width:420px;box-shadow:var(--shadow2),var(--glass-inner)}
+.login-card-title{font-size:17px;font-weight:700;margin-bottom:4px;color:var(--text)}
+.login-card-sub{font-size:12px;color:var(--text3);margin-bottom:28px;font-weight:500}
+.login-label{font-size:10px;font-weight:700;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.8px;display:block}
+.login-input{width:100%;background:rgba(255,255,255,0.65);border:1.5px solid rgba(150,190,240,0.5);color:var(--text);font-family:var(--font);font-size:14px;font-weight:500;padding:11px 15px;border-radius:12px;outline:none;transition:.2s}
+.login-input:focus{border-color:var(--accent);background:rgba(255,255,255,0.9);box-shadow:0 0 0 4px rgba(21,87,232,0.1)}
+.login-field{margin-bottom:16px}
+.login-btn{width:100%;background:linear-gradient(135deg,#1557e8,#3d7fff);color:white;border:none;padding:13px;border-radius:12px;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:.2s;margin-top:6px;letter-spacing:.2px;box-shadow:0 4px 16px rgba(21,87,232,0.4),inset 0 1px 0 rgba(255,255,255,0.2)}
+.login-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(21,87,232,0.5)}
+.login-err{color:var(--red);font-size:12px;margin-top:8px;display:none;font-weight:600}
+.login-divider{display:flex;align-items:center;gap:12px;margin:20px 0}
+.login-divider::before,.login-divider::after{content:'';flex:1;height:1px;background:rgba(120,160,220,0.25)}
+.login-divider span{font-size:11px;color:var(--text3);font-weight:600}
+.quick-btns{display:flex;gap:8px}
+.quick-btn{flex:1;background:rgba(255,255,255,0.5);border:1.5px solid rgba(150,190,240,0.4);color:var(--text2);padding:9px;border-radius:10px;font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;transition:.2s}
+.quick-btn:hover{background:rgba(255,255,255,0.85);border-color:var(--accent);color:var(--accent);transform:translateY(-1px)}
+
+/* ══ APP ══ */
+#app-screen{flex-direction:row}
+.sidebar{width:230px;min-width:230px;background:rgba(255,255,255,0.55);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border-right:1.5px solid rgba(255,255,255,0.8);display:flex;flex-direction:column;overflow:hidden;box-shadow:4px 0 30px rgba(10,40,120,0.08)}
+.sidebar-logo{padding:22px 18px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(120,160,220,0.2)}
+.sidebar-logo-text{font-size:14px;font-weight:700;color:var(--text);letter-spacing:-.2px}
+.sidebar-logo-sub{font-size:10px;color:var(--text3);font-weight:500;letter-spacing:.2px}
+.sidebar-user{padding:14px 18px;border-bottom:1px solid rgba(120,160,220,0.2);display:flex;align-items:center;gap:10px}
+.user-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;border:2px solid rgba(255,255,255,0.8);box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+.user-name{font-size:12px;font-weight:700;color:var(--text);line-height:1.3}
+.user-role{font-size:10px;color:var(--text3);font-weight:500}
+.user-badge{font-size:9px;padding:3px 7px;border-radius:6px;font-weight:700;margin-left:auto;flex-shrink:0;letter-spacing:.3px}
+.nav-section{padding:12px 10px 4px}
+.nav-section-label{font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;padding:0 8px;margin-bottom:4px}
+.nav-item{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:12px;cursor:pointer;color:var(--text2);font-size:13px;font-weight:600;transition:.15s;white-space:nowrap}
+.nav-item:hover{background:rgba(255,255,255,0.65);color:var(--text)}
+.nav-item.active{background:rgba(21,87,232,0.1);color:var(--accent);box-shadow:inset 0 0 0 1px rgba(21,87,232,0.15)}
+.nav-item svg{width:15px;height:15px;flex-shrink:0;opacity:.8}
+.nav-item.active svg{opacity:1}
+.nav-badge{margin-left:auto;font-size:9px;padding:2px 6px;border-radius:5px;font-weight:700}
+.sidebar-bottom{margin-top:auto;padding:12px 10px;border-top:1px solid rgba(120,160,220,0.2)}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.topbar{padding:0 24px;height:56px;border-bottom:1px solid rgba(255,255,255,0.6);display:flex;align-items:center;gap:12px;flex-shrink:0;background:rgba(255,255,255,0.45);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur)}
+.topbar-title{font-size:16px;font-weight:700;flex:1;color:var(--text);letter-spacing:-.2px}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.tb-btn{background:rgba(255,255,255,0.6);border:1.5px solid rgba(150,190,240,0.4);color:var(--text2);padding:7px 13px;border-radius:10px;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:var(--font);transition:.15s;font-weight:600}
+.tb-btn:hover{background:rgba(255,255,255,0.9);border-color:var(--accent);color:var(--accent)}
+.tb-btn svg{width:12px;height:12px}
+.status-dot{width:7px;height:7px;border-radius:50%;background:#16a34a;box-shadow:0 0 8px rgba(22,163,74,0.6);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.content{flex:1;overflow-y:auto;padding:22px 24px}
+.content::-webkit-scrollbar{width:4px}
+.content::-webkit-scrollbar-thumb{background:rgba(120,160,220,0.3);border-radius:2px}
+.page{display:none}
+.page.active{display:block}
+
+/* STAT CARDS */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.stat-card{background:var(--glass);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1.5px solid var(--glass-border);border-radius:18px;padding:20px;position:relative;overflow:hidden;cursor:pointer;transition:.22s;box-shadow:var(--shadow),var(--glass-inner)}
+.stat-card:hover{transform:translateY(-3px);box-shadow:var(--shadow2)}
+.stat-card::after{content:'';position:absolute;inset:0;border-radius:18px;opacity:.05;pointer-events:none}
+.stat-card.red::after{background:radial-gradient(circle at 80% 20%,#dc2626,transparent)}
+.stat-card.amber::after{background:radial-gradient(circle at 80% 20%,#d97706,transparent)}
+.stat-card.green::after{background:radial-gradient(circle at 80% 20%,#16a34a,transparent)}
+.stat-card.blue::after{background:radial-gradient(circle at 80% 20%,#1557e8,transparent)}
+.stat-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.stat-icon svg{width:18px;height:18px}
+.stat-label{font-size:11px;color:var(--text2);margin-bottom:6px;font-weight:600;letter-spacing:.1px}
+.stat-val{font-size:28px;font-weight:700;letter-spacing:-.5px;font-family:var(--mono)}
+.stat-sub{font-size:11px;color:var(--text3);margin-top:5px;font-weight:500}
+.stat-chip{position:absolute;top:16px;right:16px;font-size:9px;font-weight:700;padding:3px 8px;border-radius:6px;letter-spacing:.3px}
+.chip-red{background:rgba(220,38,38,.12);color:#b91c1c}
+.chip-amber{background:rgba(180,83,9,.12);color:#92400e}
+.chip-green{background:rgba(21,128,61,.12);color:#166534}
+.chip-blue{background:rgba(21,87,232,.12);color:#1e3a8a}
+.chip-purple{background:rgba(109,40,217,.12);color:#4c1d95}
+.chip-gray{background:rgba(100,116,139,.12);color:#334155}
+
+/* SECTIONS */
+.section{margin-bottom:22px}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.section-title{font-size:13px;font-weight:700;color:var(--text);letter-spacing:-.1px}
+.section-action{font-size:11px;color:var(--accent);cursor:pointer;font-weight:600}
+.table-wrap{background:var(--glass);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1.5px solid var(--glass-border);border-radius:18px;overflow:hidden;box-shadow:var(--shadow),var(--glass-inner)}
+table{width:100%;border-collapse:collapse}
+th{font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.7px;padding:12px 16px;text-align:left;background:rgba(255,255,255,0.5);border-bottom:1px solid rgba(120,160,220,0.2)}
+td{padding:12px 16px;font-size:12px;border-bottom:1px solid rgba(120,160,220,0.12);color:var(--text);font-weight:500}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,0.35)}
+.pill{display:inline-flex;align-items:center;font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;letter-spacing:.2px}
+.pill-red{background:rgba(220,38,38,.1);color:#b91c1c}
+.pill-amber{background:rgba(180,83,9,.1);color:#92400e}
+.pill-green{background:rgba(21,128,61,.1);color:#166534}
+.pill-blue{background:rgba(21,87,232,.1);color:#1e3a8a}
+.pill-purple{background:rgba(109,40,217,.1);color:#4c1d95}
+.pill-gray{background:rgba(100,116,139,.1);color:#334155}
+
+/* PIPELINE */
+.pipeline{display:flex;align-items:stretch;background:var(--glass);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1.5px solid var(--glass-border);border-radius:18px;overflow:hidden;margin-bottom:22px;box-shadow:var(--shadow),var(--glass-inner)}
+.pipe-agent{flex:1;padding:18px;text-align:center;border-right:1px solid rgba(120,160,220,0.2);transition:.2s}
+.pipe-agent:last-child{border-right:none}
+.pipe-agent:hover{background:rgba(255,255,255,0.3)}
+.pipe-dot{width:10px;height:10px;border-radius:50%;margin:0 auto 10px}
+.pipe-dot.done{background:#16a34a;box-shadow:0 0 8px rgba(22,163,74,0.5)}
+.pipe-dot.waiting{background:#d97706;animation:pulse 1s infinite;box-shadow:0 0 8px rgba(217,119,6,0.5)}
+.pipe-dot.blocked{background:#dc2626;box-shadow:0 0 8px rgba(220,38,38,0.5)}
+.pipe-dot.idle{background:rgba(120,160,220,0.4)}
+.pipe-name{font-size:11px;font-weight:700;color:var(--text);margin-bottom:3px}
+.pipe-count{font-size:10px;color:var(--text3);font-family:var(--mono);font-weight:500}
+
+/* ACTIVITY */
+.activity-item{display:flex;align-items:flex-start;gap:12px;padding:13px 0;border-bottom:1px solid rgba(120,160,220,0.12)}
+.activity-item:last-child{border-bottom:none}
+.activity-dot{width:8px;height:8px;border-radius:50%;margin-top:4px;flex-shrink:0}
+.activity-title{font-size:12px;color:var(--text);line-height:1.45;font-weight:500}
+.activity-meta{font-size:10px;color:var(--text3);margin-top:3px;display:flex;gap:8px;font-weight:600}
+.activity-user{color:var(--text2)}
+
+/* TWO COL */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:22px}
+.box-card{background:var(--glass);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1.5px solid var(--glass-border);border-radius:18px;padding:18px;box-shadow:var(--shadow),var(--glass-inner)}
+
+/* USER LIST */
+.user-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(120,160,220,0.12)}
+.user-row:last-child{border-bottom:none}
+.u-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;border:2px solid rgba(255,255,255,0.8)}
+.u-name{font-size:13px;font-weight:700;color:var(--text)}
+.u-role{font-size:10px;color:var(--text3);font-weight:500}
+.u-actions{margin-left:auto;display:flex;gap:6px;align-items:center}
+.u-btn{font-size:10px;padding:5px 10px;border-radius:8px;border:1.5px solid rgba(150,190,240,0.35);background:rgba(255,255,255,0.5);color:var(--text2);cursor:pointer;transition:.15s;font-family:var(--font);font-weight:600}
+.u-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(255,255,255,0.85)}
+.u-btn.danger:hover{border-color:var(--red);color:var(--red)}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(10,30,90,0.3);backdrop-filter:blur(12px);z-index:1000;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:rgba(255,255,255,0.82);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border:1.5px solid rgba(255,255,255,0.95);border-radius:24px;padding:30px;width:440px;max-width:94vw;box-shadow:0 24px 64px rgba(10,40,120,0.22),var(--glass-inner)}
+.modal-title{font-size:17px;font-weight:700;margin-bottom:3px;color:var(--text)}
+.modal-sub{font-size:12px;color:var(--text3);margin-bottom:22px;font-weight:500}
+.form-field{margin-bottom:14px}
+.form-label{font-size:10px;color:var(--text2);font-weight:700;margin-bottom:5px;text-transform:uppercase;letter-spacing:.7px;display:block}
+.form-input,.form-select{width:100%;background:rgba(255,255,255,0.7);border:1.5px solid rgba(150,190,240,0.4);color:var(--text);font-family:var(--font);font-size:13px;font-weight:500;padding:10px 14px;border-radius:10px;outline:none;transition:.2s}
+.form-input:focus,.form-select:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(21,87,232,0.1);background:rgba(255,255,255,0.95)}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:22px}
+.btn-cancel{background:rgba(255,255,255,0.6);border:1.5px solid rgba(150,190,240,0.35);color:var(--text2);padding:9px 18px;border-radius:10px;cursor:pointer;font-family:var(--font);font-size:13px;font-weight:600}
+.btn-primary{background:linear-gradient(135deg,#1557e8,#3d7fff);border:none;color:white;padding:9px 18px;border-radius:10px;cursor:pointer;font-family:var(--font);font-size:13px;font-weight:700;box-shadow:0 4px 14px rgba(21,87,232,0.35)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(21,87,232,0.45)}
+
+/* AUDIT */
+.audit-entry{font-family:var(--mono);font-size:11px;padding:9px 14px;border-bottom:1px solid rgba(120,160,220,0.1);display:flex;align-items:flex-start;gap:12px}
+.audit-time{color:var(--text3);flex-shrink:0;min-width:72px;font-weight:500}
+.audit-agent{color:var(--accent);flex-shrink:0;min-width:90px;font-weight:700}
+.audit-msg{color:var(--text);flex:1;font-weight:400}
+
+/* APPROVAL CARDS */
+.approval-card{background:var(--glass);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1.5px solid var(--glass-border);border-radius:18px;padding:18px;margin-bottom:12px;transition:.25s;box-shadow:var(--shadow),var(--glass-inner)}
+.approval-card:hover{transform:translateY(-1px);box-shadow:var(--shadow2)}
+.approval-drug{font-size:14px;font-weight:700;color:var(--text)}
+.approval-hospital{font-size:11px;color:var(--text3);margin-top:3px;font-weight:500}
+.approval-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
+.approval-meta{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.approval-actions{display:flex;gap:10px}
+.btn-approve{flex:1;background:rgba(21,128,61,.1);border:1.5px solid rgba(21,128,61,.3);color:#166534;padding:9px;border-radius:12px;cursor:pointer;font-size:12px;font-family:var(--font);font-weight:700;transition:.2s}
+.btn-approve:hover{background:rgba(21,128,61,.2);transform:translateY(-1px)}
+.btn-block{flex:1;background:rgba(220,38,38,.08);border:1.5px solid rgba(220,38,38,.2);color:#b91c1c;padding:9px;border-radius:12px;cursor:pointer;font-size:12px;font-family:var(--font);font-weight:700;transition:.2s}
+.btn-block:hover{background:rgba(220,38,38,.16);transform:translateY(-1px)}
+
+/* RUN BUTTON */
+.run-btn{background:linear-gradient(135deg,#1557e8,#3d7fff);color:white;border:none;padding:9px 16px;border-radius:11px;font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:.2s;letter-spacing:.2px;box-shadow:0 4px 14px rgba(21,87,232,0.38),inset 0 1px 0 rgba(255,255,255,0.2)}
+.run-btn:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(21,87,232,0.48)}
+.run-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.run-btn svg{width:11px;height:11px}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:rgba(255,255,255,0.88);backdrop-filter:blur(20px);border:1.5px solid rgba(255,255,255,0.95);border-radius:14px;padding:12px 18px;font-size:12px;font-weight:600;z-index:2000;transform:translateY(70px);opacity:0;transition:.3s cubic-bezier(.34,1.56,.64,1);max-width:300px;line-height:1.5;box-shadow:0 10px 30px rgba(10,40,120,0.16);color:var(--text)}
+.toast.show{transform:none;opacity:1}
+.toast.success{border-color:rgba(21,128,61,.4);color:var(--green)}
+.toast.error{border-color:rgba(220,38,38,.4);color:var(--red)}
+
+/* API STATUS */
+.api-status{display:inline-flex;align-items:center;gap:6px;font-size:11px;padding:5px 11px;background:rgba(255,255,255,0.55);border:1.5px solid rgba(150,190,240,0.35);border-radius:8px;font-weight:600}
+.api-dot{width:6px;height:6px;border-radius:50%}
+
+/* LIVE UPDATE BADGE */
+.live-badge{display:inline-flex;align-items:center;gap:4px;font-size:9px;padding:3px 7px;border-radius:5px;background:rgba(22,163,74,0.1);color:#166534;font-weight:700;border:1px solid rgba(22,163,74,0.2)}
+.live-badge-dot{width:5px;height:5px;border-radius:50%;background:#16a34a;animation:pulse 1.5s infinite}
+
+/* EMPTY STATE */
+.empty-state{padding:40px;text-align:center;color:var(--text3);font-size:12px;font-weight:500}
+.empty-state-icon{font-size:32px;margin-bottom:12px}
+.empty-state-title{font-size:13px;font-weight:700;color:var(--text2);margin-bottom:4px}
+
+/* SKELETON LOADER */
+.skel{background:linear-gradient(90deg,rgba(120,160,220,0.1) 0%,rgba(120,160,220,0.22) 50%,rgba(120,160,220,0.1) 100%);background-size:200% 100%;animation:skel 1.4s ease-in-out infinite;border-radius:6px;display:inline-block}
+@keyframes skel{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* LLM REASONING PANEL */
+.reasoning-panel{background:var(--glass);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1.5px solid var(--glass-border);border-radius:18px;overflow:hidden;box-shadow:var(--shadow),var(--glass-inner);margin-bottom:22px}
+.reasoning-header{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid rgba(120,160,220,0.2);background:rgba(255,255,255,0.45)}
+.reasoning-title{font-size:13px;font-weight:700;color:var(--text);flex:1}
+.reasoning-tabs{display:flex;gap:6px}
+.reasoning-tab{font-size:10px;font-weight:700;padding:4px 10px;border-radius:8px;cursor:pointer;border:1.5px solid rgba(150,190,240,0.3);background:rgba(255,255,255,0.4);color:var(--text2);transition:.15s}
+.reasoning-tab.active{background:rgba(21,87,232,0.12);border-color:rgba(21,87,232,0.3);color:var(--accent)}
+.reasoning-tab:hover{background:rgba(255,255,255,0.7)}
+.reasoning-body{padding:16px 18px;min-height:80px}
+.reasoning-text{font-size:12px;color:var(--text);line-height:1.7;font-weight:500}
+.reasoning-text b{color:var(--accent)}
+.reasoning-placeholder{color:var(--text3);font-size:12px;font-style:italic}
+
+/* DRUG QUERY CHAT */
+.chat-fab{position:fixed;bottom:28px;right:28px;z-index:500;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#1557e8,#3d7fff);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 24px rgba(21,87,232,0.5),inset 0 1px 0 rgba(255,255,255,0.2);transition:.25s;color:white;font-size:22px}
+.chat-fab:hover{transform:scale(1.1);box-shadow:0 10px 32px rgba(21,87,232,0.6)}
+.chat-panel{position:fixed;bottom:92px;right:28px;z-index:500;width:400px;max-height:560px;background:rgba(255,255,255,0.88);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border:1.5px solid rgba(255,255,255,0.95);border-radius:22px;box-shadow:0 20px 60px rgba(10,40,120,0.22);display:none;flex-direction:column;overflow:hidden}
+.chat-panel.open{display:flex}
+.chat-header{padding:14px 18px;border-bottom:1px solid rgba(120,160,220,0.2);display:flex;align-items:center;gap:10px;flex-shrink:0;background:rgba(255,255,255,0.6)}
+.chat-header-title{font-size:13px;font-weight:700;color:var(--text);flex:1}
+.chat-header-sub{font-size:10px;color:var(--text3);font-weight:500}
+.chat-close{background:none;border:none;cursor:pointer;color:var(--text3);font-size:18px;padding:0;line-height:1}
+.chat-drug-pills{padding:10px 14px 0;display:flex;gap:6px;flex-wrap:wrap;flex-shrink:0}
+.chat-drug-pill{font-size:10px;font-weight:700;padding:4px 10px;border-radius:20px;cursor:pointer;background:rgba(21,87,232,0.08);border:1.5px solid rgba(21,87,232,0.2);color:#1e3a8a;transition:.15s}
+.chat-drug-pill:hover{background:rgba(21,87,232,0.18);transform:translateY(-1px)}
+.chat-drug-pill.active{background:rgba(21,87,232,0.2);border-color:var(--accent);color:var(--accent)}
+.chat-messages{flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.chat-messages::-webkit-scrollbar{width:3px}
+.chat-messages::-webkit-scrollbar-thumb{background:rgba(120,160,220,0.3);border-radius:2px}
+.chat-msg{max-width:88%;line-height:1.55;font-size:12px;font-weight:500}
+.chat-msg.bot{align-self:flex-start}
+.chat-msg.user{align-self:flex-end}
+.chat-bubble{padding:9px 13px;border-radius:14px}
+.chat-msg.bot .chat-bubble{background:rgba(240,245,255,0.9);border:1.5px solid rgba(120,160,220,0.25);color:var(--text);border-radius:4px 14px 14px 14px}
+.chat-msg.user .chat-bubble{background:linear-gradient(135deg,#1557e8,#3d7fff);color:white;border-radius:14px 14px 4px 14px}
+.chat-metric-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.chat-metric{font-size:10px;font-weight:700;padding:3px 8px;border-radius:8px}
+.chat-metric.red{background:rgba(220,38,38,.1);color:#b91c1c}
+.chat-metric.amber{background:rgba(180,83,9,.1);color:#92400e}
+.chat-metric.green{background:rgba(21,128,61,.1);color:#166534}
+.chat-metric.blue{background:rgba(21,87,232,.1);color:#1e3a8a}
+.chat-metric.purple{background:rgba(109,40,217,.1);color:#4c1d95}
+.chat-hospital-row{margin-top:6px;font-size:11px}
+.chat-hospital-item{display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid rgba(120,160,220,0.12)}
+.chat-hospital-item:last-child{border-bottom:none}
+.chat-days{font-family:var(--mono);font-weight:700;font-size:11px}
+.chat-typing{display:flex;gap:4px;align-items:center;padding:8px 0}
+.chat-typing span{width:6px;height:6px;border-radius:50%;background:var(--text3);animation:typingBounce 1.2s infinite}
+.chat-typing span:nth-child(2){animation-delay:.2s}
+.chat-typing span:nth-child(3){animation-delay:.4s}
+@keyframes typingBounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-6px)}}
+.chat-footer{padding:10px 12px;border-top:1px solid rgba(120,160,220,0.15);display:flex;gap:8px;flex-shrink:0;background:rgba(255,255,255,0.6)}
+.chat-input{flex:1;background:rgba(255,255,255,0.8);border:1.5px solid rgba(150,190,240,0.4);color:var(--text);font-family:var(--font);font-size:12px;font-weight:500;padding:9px 13px;border-radius:10px;outline:none;transition:.2s}
+.chat-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(21,87,232,0.1)}
+.chat-send{background:linear-gradient(135deg,#1557e8,#3d7fff);border:none;color:white;width:36px;height:36px;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 3px 10px rgba(21,87,232,0.35);transition:.2s;flex-shrink:0}
+.chat-send:hover{transform:scale(1.05)}
+.chat-send:disabled{opacity:.5;cursor:not-allowed;transform:none}
+</style>
+</head>
+<body>
+
+<!-- ══ LOGIN ══ -->
+<div id="login-screen" class="screen active">
+  <div class="login-scene">
+    <div class="login-grid"></div>
+    <div class="scene-orb scene-orb-1"></div>
+    <div class="scene-orb scene-orb-2"></div>
+    <div class="scene-orb scene-orb-3"></div>
+  </div>
+  <div class="login-wrap">
+    <div class="login-hero">
+      <div class="login-hero-logo">
+        <svg width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="logoGrad" x1="0" y1="0" x2="52" y2="52" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#3d7fff"/>
+              <stop offset="100%" stop-color="#1557e8"/>
+            </linearGradient>
+            <filter id="logoShadow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="rgba(21,87,232,0.4)"/>
+            </filter>
+          </defs>
+          <path d="M26 3L6 11v14c0 12.2 8.6 23.4 20 26 11.4-2.6 20-13.8 20-26V11L26 3z" fill="url(#logoGrad)" filter="url(#logoShadow)"/>
+          <path d="M26 7L10 14v11c0 10 7 19.2 16 21.3V7z" fill="rgba(255,255,255,0.12)"/>
+          <rect x="22" y="16" width="8" height="20" rx="2" fill="white"/>
+          <rect x="16" y="22" width="20" height="8" rx="2" fill="white"/>
+          <circle cx="26" cy="3" r="2.5" fill="white" opacity=".9"/>
+        </svg>
+        <div>
+          <div class="login-hero-wordmark">Medi<span>Chain</span> AI</div>
+          <div class="login-hero-sub">Healthcare Supply Chain Intelligence</div>
+        </div>
+      </div>
+    </div>
+    <div class="login-card">
+      <div class="login-card-title">Welcome back</div>
+      <div class="login-card-sub">Sign in to your dashboard</div>
+      <div class="login-field">
+        <label class="login-label">Username</label>
+        <input class="login-input" id="login-user" type="text" placeholder="Enter username" value="admin"/>
+      </div>
+      <div class="login-field">
+        <label class="login-label">Password</label>
+        <input class="login-input" id="login-pass" type="password" placeholder="Enter password" value="admin123"/>
+      </div>
+      <button class="login-btn" onclick="doLogin()">Sign in →</button>
+      <div class="login-err" id="login-err">Invalid credentials. Please try again.</div>
+      <div class="login-divider"><span>Quick access</span></div>
+      <div class="quick-btns">
+        <button class="quick-btn" onclick="quickLogin('admin','admin123')">Admin</button>
+        <button class="quick-btn" onclick="quickLogin('analyst1','pass123')">Analyst</button>
+        <button class="quick-btn" onclick="quickLogin('reviewer1','pass123')">Reviewer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ APP ══ -->
+<div id="app-screen" class="screen">
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <svg width="32" height="32" viewBox="0 0 52 52" fill="none">
+        <defs><linearGradient id="sg" x1="0" y1="0" x2="52" y2="52" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#3d7fff"/><stop offset="100%" stop-color="#1557e8"/></linearGradient></defs>
+        <path d="M26 3L6 11v14c0 12.2 8.6 23.4 20 26 11.4-2.6 20-13.8 20-26V11L26 3z" fill="url(#sg)"/>
+        <rect x="22" y="16" width="8" height="20" rx="2" fill="white"/>
+        <rect x="16" y="22" width="20" height="8" rx="2" fill="white"/>
+      </svg>
+      <div>
+        <div class="sidebar-logo-text">MediChain AI</div>
+        <div class="sidebar-logo-sub">v2.1 · live</div>
+      </div>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-avatar" id="sidebar-avatar" style="background:rgba(21,87,232,.15);color:#1e3a8a">AD</div>
+      <div>
+        <div class="user-name" id="sidebar-name">Admin User</div>
+        <div class="user-role" id="sidebar-role">Administrator</div>
+      </div>
+      <span class="user-badge chip-blue" id="sidebar-badge">ADMIN</span>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-label">Overview</div>
+      <div class="nav-item active" onclick="goto('dashboard',this)">
+        <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg>
+        Dashboard
+      </div>
+      <div class="nav-item" onclick="goto('agents',this)">
+        <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="4" cy="5" r="2"/><circle cx="12" cy="5" r="2"/><circle cx="8" cy="13" r="2"/><path d="M4 7v2l4 2M12 7v2l-4 2" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+        AI Agents
+        <span class="nav-badge chip-green" id="nav-agents-badge">—</span>
+      </div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-label">Operations</div>
+      <div class="nav-item" onclick="goto('disruptions',this)">
+        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1.5L1.5 13.5h13L8 1.5zm0 3.5l3.8 6.5H4.2L8 5zm-.6 2.5h1.2v2.5H7.4V7.5zm0 3h1.2V12H7.4v-1.5z"/></svg>
+        Disruptions
+        <span class="nav-badge chip-red" id="nav-badge-disruptions">—</span>
+      </div>
+      <div class="nav-item" onclick="goto('compliance',this)">
+        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1L2 4v4c0 3.3 2.5 6.4 6 7 3.5-.6 6-3.7 6-7V4L8 1zm-1 9.4L4.6 8l1-1L7 8.8l3.4-3.4 1 1L7 10.4z"/></svg>
+        Compliance
+        <span class="nav-badge chip-amber" id="nav-badge-compliance">—</span>
+      </div>
+      <div class="nav-item" onclick="goto('approvals',this)">
+        <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1"/><path d="M5 8l2 2 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Approvals
+        <span class="nav-badge chip-amber" id="nav-badge-approvals">—</span>
+      </div>
+    </div>
+    <div class="nav-section" id="admin-nav">
+      <div class="nav-section-label">Admin</div>
+      <div class="nav-item" onclick="goto('users',this)">
+        <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>
+        User Management
+      </div>
+      <div class="nav-item" onclick="goto('audit',this)">
+        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M3 2h10a1 1 0 011 1v10a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1zm1 2v2h8V4H4zm0 4v1.5h8V8H4zm0 3v1h5v-1H4z"/></svg>
+        Audit Log
+      </div>
+      <div class="nav-item" onclick="goto('activity',this)">
+        <svg viewBox="0 0 16 16" fill="currentColor"><polyline points="1,8 4,3 6,11 9,5 11,9 14,8" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Team Activity
+      </div>
+    </div>
+    <div class="sidebar-bottom">
+      <div class="nav-item" onclick="doLogout()">
+        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M6 2H3a1 1 0 00-1 1v10a1 1 0 001 1h3M10 11l3-3-3-3M13 8H6"/></svg>
+        Sign out
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="topbar-title">Dashboard</div>
+      <div class="topbar-right">
+        <div class="api-status" id="api-status-indicator">
+          <div class="api-dot" style="background:#d97706"></div>
+          <span id="api-status-text">Connecting…</span>
+        </div>
+        <div class="live-badge" id="live-badge" style="display:none">
+          <span class="live-badge-dot"></span>LIVE
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text3);font-weight:600">
+          <span class="status-dot"></span> Pipeline active
+        </div>
+        <button class="run-btn" id="run-btn" onclick="runPipeline()">
+          <svg viewBox="0 0 12 12" fill="currentColor"><path d="M2 2l8 4-8 4V2z"/></svg>
+          Run Pipeline
+        </button>
+        <button class="tb-btn" id="add-user-btn" onclick="openModal()">
+          <svg viewBox="0 0 12 12" fill="currentColor"><path d="M6 1v10M1 6h10"/></svg>
+          Add User
+        </button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div class="page active" id="page-dashboard">
+        <div class="stat-grid">
+          <div class="stat-card red">
+            <div class="stat-icon" style="background:rgba(220,38,38,.1)"><svg viewBox="0 0 20 20" fill="#b91c1c"><path d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"/></svg></div>
+            <div class="stat-label">Critical Flags</div>
+            <div class="stat-val" style="color:var(--red)" id="stat-critical">—</div>
+            <div class="stat-sub" id="stat-sub-flags">—</div>
+            <span class="stat-chip chip-red">ALERT</span>
+          </div>
+          <div class="stat-card amber">
+            <div class="stat-icon" style="background:rgba(180,83,9,.1)"><svg viewBox="0 0 20 20" fill="#92400e"><path d="M9 6a1 1 0 012 0v4a1 1 0 01-2 0V6zm1 8a1 1 0 100-2 1 1 0 000 2zm0-14a8 8 0 100 16A8 8 0 0010 0z"/></svg></div>
+            <div class="stat-label">Patients at Risk</div>
+            <div class="stat-val" style="color:var(--amber)" id="stat-patients">—</div>
+            <div class="stat-sub" id="stat-sub-scenarios">—</div>
+            <span class="stat-chip chip-amber">HIGH</span>
+          </div>
+          <div class="stat-card blue">
+            <div class="stat-icon" style="background:rgba(21,87,232,.1)"><svg viewBox="0 0 20 20" fill="#1e3a8a"><path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267zm4-4.849a6 6 0 11-12 0 6 6 0 0112 0zm-1 0a5 5 0 10-10 0 5 5 0 0010 0z"/></svg></div>
+            <div class="stat-label">Financial Impact</div>
+            <div class="stat-val" style="color:var(--accent)" id="stat-financial">—</div>
+            <div class="stat-sub">Emergency procurement cost</div>
+            <span class="stat-chip chip-blue">RISK</span>
+          </div>
+          <div class="stat-card green">
+            <div class="stat-icon" style="background:rgba(21,128,61,.1)"><svg viewBox="0 0 20 20" fill="#166634"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg></div>
+            <div class="stat-label">Actions Approved</div>
+            <div class="stat-val" style="color:var(--green)" id="stat-approved">—</div>
+            <div class="stat-sub" id="stat-sub-compliance">—</div>
+            <span class="stat-chip chip-green">LIVE</span>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <span class="section-title">Agent Pipeline · <span style="font-family:var(--mono);font-size:12px;color:var(--text3)" id="run-id-label">—</span></span>
+            <div style="display:flex;align-items:center;gap:10px">
+              <span class="section-action" onclick="goto('agents',null)">View details →</span>
+            </div>
+          </div>
+          <div class="pipeline">
+            <div class="pipe-agent"><div class="pipe-dot idle" id="pipe-dot-1"></div><div class="pipe-name">Disruption Agent</div><div class="pipe-count" id="pipe-disruption-count">—</div></div>
+            <div class="pipe-agent"><div class="pipe-dot idle" id="pipe-dot-2"></div><div class="pipe-name">Ripple Agent</div><div class="pipe-count" id="pipe-ripple-count">—</div></div>
+            <div class="pipe-agent"><div class="pipe-dot idle" id="pipe-dot-3"></div><div class="pipe-name">Compliance Agent</div><div class="pipe-count" id="pipe-compliance-count">—</div></div>
+            <div class="pipe-agent"><div class="pipe-dot idle" id="pipe-dot-4"></div><div class="pipe-name">Approval Gate</div><div class="pipe-count" id="pipe-approval-count">—</div></div>
+          </div>
+        </div>
+
+        <!-- LLM REASONING PANEL -->
+        <div class="section">
+          <div class="section-header">
+            <span class="section-title">🧠 AI Agent Reasoning</span>
+            <span class="live-badge"><span class="live-badge-dot"></span>LLM OUTPUT</span>
+          </div>
+          <div class="reasoning-panel">
+            <div class="reasoning-header">
+              <div class="reasoning-title">Latest agent analysis from pipeline run</div>
+              <div class="reasoning-tabs">
+                <div class="reasoning-tab active" onclick="switchTab('disruption',this)">Disruption</div>
+                <div class="reasoning-tab" onclick="switchTab('ripple',this)">Ripple</div>
+                <div class="reasoning-tab" onclick="switchTab('compliance',this)">Compliance</div>
+                <div class="reasoning-tab" onclick="switchTab('playbook',this)">Playbook</div>
+              </div>
+            </div>
+            <div class="reasoning-body">
+              <div id="llm-reasoning"></div>
+              <div id="reasoning-disruption" class="reasoning-text"><span class="reasoning-placeholder">Run the pipeline to see AI reasoning from the Disruption Detection Agent…</span></div>
+              <div id="reasoning-ripple" class="reasoning-text" style="display:none"><span class="reasoning-placeholder">Run the pipeline to see AI reasoning from the Ripple Modeling Agent…</span></div>
+              <div id="reasoning-compliance" class="reasoning-text" style="display:none"><span class="reasoning-placeholder">Run the pipeline to see AI reasoning from the Compliance Guardrail Agent…</span></div>
+              <div id="reasoning-playbook" class="reasoning-text" style="display:none"><span class="reasoning-placeholder">Run the pipeline to see the AI-generated procurement Playbook…</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="section">
+            <div class="section-header">
+              <span class="section-title">Top Disruptions</span>
+              <span class="section-action" onclick="goto('disruptions',null)">All →</span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Drug</th><th>Hospital</th><th>Days</th><th>Severity</th></tr></thead>
+                <tbody id="dash-disruption-tbody">
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="section">
+            <div class="section-header">
+              <span class="section-title">Recent Activity</span>
+              <span class="section-action" onclick="goto('activity',null)">All →</span>
+            </div>
+            <div class="box-card" style="padding:0 18px">
+              <div id="dash-activity-feed">
+                <div class="empty-state" style="padding:24px 0"><div class="empty-state-title">No activity yet</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AGENTS -->
+      <div class="page" id="page-agents">
+        <div class="stat-grid">
+          <div class="stat-card blue"><div class="stat-icon" style="background:rgba(21,87,232,.1)"><svg viewBox="0 0 20 20" fill="#1e3a8a"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5z"/></svg></div><div class="stat-label">Total Flags</div><div class="stat-val" style="color:var(--accent)" id="agents-total-flags">—</div><div class="stat-sub">From all signal sources</div></div>
+          <div class="stat-card red"><div class="stat-icon" style="background:rgba(220,38,38,.1)"><svg viewBox="0 0 20 20" fill="#b91c1c"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92z"/></svg></div><div class="stat-label">Critical</div><div class="stat-val" style="color:var(--red)" id="agents-critical">—</div><div class="stat-sub">Escalated to ripple agent</div></div>
+          <div class="stat-card amber"><div class="stat-icon" style="background:rgba(180,83,9,.1)"><svg viewBox="0 0 20 20" fill="#92400e"><path d="M3 12v3a1 1 0 001 1h12a1 1 0 001-1v-3M7 8l3 3 3-3M10 3v8"/></svg></div><div class="stat-label">Scenarios</div><div class="stat-val" style="color:var(--amber)" id="agents-scenarios">—</div><div class="stat-sub">Unique drug × hospital pairs</div></div>
+          <div class="stat-card green"><div class="stat-icon" style="background:rgba(21,128,61,.1)"><svg viewBox="0 0 20 20" fill="#166634"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"/></svg></div><div class="stat-label">Run ID</div><div class="stat-val" style="color:var(--green);font-size:14px;font-family:var(--mono)" id="agents-run-id">—</div><div class="stat-sub" id="agents-run-sub">—</div></div>
+        </div>
+        <div class="section">
+          <div class="section-title" style="margin-bottom:14px">Agent Execution Log</div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Step</th><th>Agent</th><th>Action</th><th>Output</th><th>Status</th></tr></thead>
+              <tbody id="agent-exec-tbody">
+                <tr><td colspan="5" class="empty-state"><div class="empty-state-title">Loading agent log…</div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="two-col">
+          <div class="box-card">
+            <div class="section-title" style="margin-bottom:16px">Signal Sources</div>
+            <div style="display:flex;flex-direction:column;gap:12px" id="signal-sources-body">
+              <div style="color:var(--text3);font-size:12px">Loading…</div>
+            </div>
+          </div>
+          <div class="box-card">
+            <div class="section-title" style="margin-bottom:16px">City Risk · Cold Chain</div>
+            <div style="display:flex;flex-direction:column;gap:10px" id="cold-chain-body">
+              <div style="color:var(--text3);font-size:12px">Loading…</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DISRUPTIONS -->
+      <div class="page" id="page-disruptions">
+        <div class="section">
+          <div class="section-header">
+            <span class="section-title" id="disruptions-header">All Disruption Flags</span>
+            <div style="display:flex;gap:6px" id="disruptions-pills"></div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Type</th><th>Drug</th><th>Hospital</th><th>Supplier</th><th>Country</th><th>Days Left</th><th>Severity</th></tr></thead>
+              <tbody id="disruption-tbody">
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- COMPLIANCE -->
+      <div class="page" id="page-compliance">
+        <div class="stat-grid">
+          <div class="stat-card green"><div class="stat-icon" style="background:rgba(21,128,61,.1)"><svg viewBox="0 0 20 20" fill="#166634"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg></div><div class="stat-label">Approved</div><div class="stat-val" style="color:var(--green)" id="comp-stat-approved">—</div><div class="stat-sub">Auto-executed</div></div>
+          <div class="stat-card amber"><div class="stat-icon" style="background:rgba(180,83,9,.1)"><svg viewBox="0 0 20 20" fill="#92400e"><path d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92z"/></svg></div><div class="stat-label">Warned</div><div class="stat-val" style="color:var(--amber)" id="comp-stat-warned">—</div><div class="stat-sub">Needs human review</div></div>
+          <div class="stat-card red"><div class="stat-icon" style="background:rgba(220,38,38,.1)"><svg viewBox="0 0 20 20" fill="#b91c1c"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"/></svg></div><div class="stat-label">Blocked</div><div class="stat-val" style="color:var(--red)" id="comp-stat-blocked">—</div><div class="stat-sub">Requires intervention</div></div>
+          <div class="stat-card blue"><div class="stat-icon" style="background:rgba(21,87,232,.1)"><svg viewBox="0 0 20 20" fill="#1e3a8a"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5z"/></svg></div><div class="stat-label">Checked</div><div class="stat-val" style="color:var(--accent)" id="comp-stat-checked">—</div><div class="stat-sub">All critical scenarios</div></div>
+        </div>
+        <div class="section">
+          <div class="section-title" style="margin-bottom:14px">Compliance Results</div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Drug</th><th>Hospital</th><th>Action</th><th>ICD-10</th><th>Violations</th><th>Warnings</th><th>Status</th></tr></thead>
+              <tbody id="compliance-tbody">
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- APPROVALS -->
+      <div class="page" id="page-approvals">
+        <div class="section-header" style="margin-bottom:18px">
+          <span class="section-title">Pending Human Approvals · <span id="pending-count">—</span> items</span>
+          <span style="font-size:11px;color:var(--text3);font-weight:500">NDPS Act &amp; CDSCO warnings require manual sign-off</span>
+        </div>
+        <div id="approvals-list">
+        </div>
+      </div>
+
+      <!-- USERS -->
+      <div class="page" id="page-users">
+        <div class="section">
+          <div class="section-header">
+            <span class="section-title">Registered Users · <span id="user-count">—</span></span>
+            <button class="tb-btn" onclick="openModal()">+ Add User</button>
+          </div>
+          <div class="box-card">
+            <div id="users-list">
+              <div class="user-row"><div class="u-avatar" style="background:rgba(21,87,232,.15);color:#1e3a8a">AD</div><div><div class="u-name">Admin User</div><div class="u-role">admin · admin@medichain.ai</div></div><div class="u-actions"><span class="pill pill-blue">ADMIN</span><button class="u-btn">Edit</button></div></div>
+              <div class="user-row"><div class="u-avatar" style="background:rgba(21,128,61,.12);color:#166634">RS</div><div><div class="u-name">Dr. Ravi Sharma</div><div class="u-role">analyst · ravi@medichain.ai</div></div><div class="u-actions"><span class="pill pill-green">ANALYST</span><button class="u-btn">Edit</button><button class="u-btn danger" onclick="removeUser(this)">Remove</button></div></div>
+              <div class="user-row"><div class="u-avatar" style="background:rgba(180,83,9,.12);color:#92400e">PK</div><div><div class="u-name">Priya Kumar</div><div class="u-role">reviewer · priya@medichain.ai</div></div><div class="u-actions"><span class="pill pill-amber">REVIEWER</span><button class="u-btn">Edit</button><button class="u-btn danger" onclick="removeUser(this)">Remove</button></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AUDIT -->
+      <div class="page" id="page-audit">
+        <div class="section">
+          <div class="section-title" style="margin-bottom:14px" id="audit-title">Immutable Audit Trail · Loading…</div>
+          <div class="table-wrap"><div style="max-height:520px;overflow-y:auto" id="audit-entries">
+          </div></div>
+        </div>
+      </div>
+
+      <!-- ACTIVITY -->
+      <div class="page" id="page-activity">
+        <div class="section">
+          <div class="section-title" style="margin-bottom:14px">Team Activity · All users</div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Time</th><th>User</th><th>Role</th><th>Action</th><th>Target</th><th>Result</th></tr></thead>
+              <tbody id="activity-tbody">
+                <tr><td colspan="6" class="empty-state"><div class="empty-state-title">No activity recorded yet</div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app-screen -->
+
+<!-- DRUG QUERY CHAT -->
+<button class="chat-fab" onclick="toggleChat()" title="Ask about a drug">💊</button>
+<div class="chat-panel" id="chat-panel">
+  <div class="chat-header">
+    <div>
+      <div class="chat-header-title">Drug Supply Intelligence</div>
+      <div class="chat-header-sub">Ask about any drug in your inventory</div>
+    </div>
+    <button class="chat-close" onclick="toggleChat()">×</button>
+  </div>
+  <div class="chat-drug-pills" id="chat-drug-pills">
+    <span class="chat-drug-pill" onclick="selectDrug('Heparin')">Heparin</span>
+    <span class="chat-drug-pill" onclick="selectDrug('Insulin')">Insulin</span>
+    <span class="chat-drug-pill" onclick="selectDrug('Morphine')">Morphine</span>
+    <span class="chat-drug-pill" onclick="selectDrug('Methotrexate')">Methotrexate</span>
+    <span class="chat-drug-pill" onclick="selectDrug('Vancomycin')">Vancomycin</span>
+    <span class="chat-drug-pill" onclick="selectDrug('Epinephrine')">Epinephrine</span>
+    <span class="chat-drug-pill" onclick="selectDrug('Dexamethasone')">Dexamethasone</span>
+    <span class="chat-drug-pill" onclick="selectDrug('Cisplatin')">Cisplatin</span>
+  </div>
+  <div class="chat-messages" id="chat-messages">
+    <div class="chat-msg bot">
+      <div class="chat-bubble">👋 Hi! Select a drug above or type your question below.<br><br>
+      Examples:<br>
+      • <i>Which hospitals are critical for Heparin?</i><br>
+      • <i>What's the compliance status for Morphine?</i><br>
+      • <i>Is there a cold chain risk for Insulin?</i></div>
+    </div>
+  </div>
+  <div class="chat-footer">
+    <input class="chat-input" id="chat-input" placeholder="Ask about a drug or supply chain issue…" onkeydown="if(event.key==='Enter')sendQuery()"/>
+    <button class="chat-send" id="chat-send-btn" onclick="sendQuery()">➤</button>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-title">Add new user</div>
+    <div class="modal-sub">Only admins and managers can register new users.</div>
+    <div class="form-field"><label class="form-label">Full Name</label><input class="form-input" id="new-name" placeholder="e.g. Dr. Anita Rao" type="text"/></div>
+    <div class="form-field"><label class="form-label">Email</label><input class="form-input" id="new-email" placeholder="anita@medichain.ai" type="email"/></div>
+    <div class="form-field"><label class="form-label">Username</label><input class="form-input" id="new-username" placeholder="anita.rao" type="text"/></div>
+    <div class="form-field"><label class="form-label">Role</label>
+      <select class="form-select" id="new-role">
+        <option value="analyst">Analyst</option><option value="reviewer">Reviewer</option>
+        <option value="viewer">Viewer</option><option value="manager">Manager</option>
+      </select>
+    </div>
+    <div class="form-field"><label class="form-label">Temporary Password</label><input class="form-input" id="new-pass" placeholder="min 8 characters" type="password"/></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="addUser()">Create User</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══ CONFIG ══
+// API calls go to FastAPI (same origin when using /dashboard). Pipeline trigger: POST /webhook/run-agents (proxies to n8n on server).
+const NGROK_URL = 'https://indivisibly-exemptible-guillermina.ngrok-free.dev';
+const API_BASE = (() => {
+  // If you're running the HTML from Live Server / another port, location.origin is NOT FastAPI.
+  // Prefer the ngrok URL unless the page is already hosted on FastAPI/ngrok.
+  try {
+    const o = location && location.origin ? location.origin : '';
+    if (!o || o === 'null') return NGROK_URL;
+    const host = location.hostname || '';
+    const port = location.port || '';
+    const isFastApiLocal = (host === 'localhost' || host === '127.0.0.1') && port === '8000';
+    const isNgrok = host.endsWith('ngrok-free.dev');
+    return (isFastApiLocal || isNgrok) ? o : NGROK_URL;
+  } catch {
+    return NGROK_URL;
+  }
+})();
+const DEFAULT_HEADERS = {
+  'Content-Type': 'application/json',
+  'ngrok-skip-browser-warning': 'true',
+};
+
+async function apiFetch(path, opts = {}) {
+  const headers = { ...DEFAULT_HEADERS, ...(opts.headers || {}) };
+  return fetch(API_BASE + path, { ...opts, headers });
+}
+
+// ══ AUTH ══
+const USERS = {
+  'admin':    { pass: 'admin123', role: 'admin',    name: 'Admin User',       initials: 'AD', color: 'rgba(21,87,232,.15)',  tc: '#1e3a8a' },
+  'analyst1': { pass: 'pass123',  role: 'analyst',  name: 'Dr. Ravi Sharma',  initials: 'RS', color: 'rgba(21,128,61,.15)',  tc: '#166634' },
+  'reviewer1':{ pass: 'pass123',  role: 'reviewer', name: 'Priya Kumar',      initials: 'PK', color: 'rgba(180,83,9,.15)',   tc: '#92400e' },
+};
+let currentUser = null;
+let pendingCount = 0;
+let liveInterval = null;
+let _activePage = 'dashboard';
+let _dashboardRefreshInFlight = false;
+window._summary = null;
+window._rippleData = null;
+
+const roleColors  = { admin:'blue', analyst:'green', reviewer:'amber', manager:'purple', viewer:'gray' };
+const roleLabels  = { admin:'ADMIN', analyst:'ANALYST', reviewer:'REVIEWER', manager:'MANAGER', viewer:'VIEWER' };
+const userColors  = [
+  { bg:'rgba(109,40,217,.15)', tc:'#4c1d95' },
+  { bg:'rgba(13,148,136,.15)', tc:'#134e4a' },
+  { bg:'rgba(220,38,38,.12)',  tc:'#b91c1c' },
+  { bg:'rgba(180,83,9,.12)',   tc:'#92400e' },
+];
+let colorIdx = 0;
+
+function quickLogin(u, p) { document.getElementById('login-user').value = u; document.getElementById('login-pass').value = p; doLogin(); }
+
+function doLogin() {
+  const u = document.getElementById('login-user').value.trim();
+  const p = document.getElementById('login-pass').value;
+  const err = document.getElementById('login-err');
+  if (USERS[u] && USERS[u].pass === p) {
+    currentUser = { ...USERS[u], username: u };
+    err.style.display = 'none';
+    document.getElementById('login-screen').classList.remove('active');
+    document.getElementById('app-screen').classList.add('active');
+    const av = document.getElementById('sidebar-avatar');
+    av.textContent = currentUser.initials;
+    av.style.background = currentUser.color;
+    av.style.color = currentUser.tc;
+    document.getElementById('sidebar-name').textContent = currentUser.name;
+    document.getElementById('sidebar-role').textContent = currentUser.role;
+    const badge = document.getElementById('sidebar-badge');
+    badge.textContent = roleLabels[currentUser.role] || currentUser.role.toUpperCase();
+    badge.className = 'user-badge chip-' + (roleColors[currentUser.role] || 'gray');
+    const isAdmin = currentUser.role === 'admin';
+    document.getElementById('admin-nav').style.display = isAdmin ? 'block' : 'none';
+    document.getElementById('add-user-btn').style.display = isAdmin ? 'flex' : 'none';
+    goto('dashboard', document.querySelector('.nav-item'));
+    checkAPI();
+    loadDashboard();
+    startLiveUpdates();
+  } else {
+    err.style.display = 'block';
+  }
+}
+
+function doLogout() {
+  stopLiveUpdates();
+  document.getElementById('app-screen').classList.remove('active');
+  document.getElementById('login-screen').classList.add('active');
+  document.getElementById('login-pass').value = '';
+  currentUser = null;
+  document.getElementById('live-badge').style.display = 'none';
+}
+
+// ══ API ══
+async function checkAPI() {
+  try {
+    const r = await apiFetch('/', { signal: AbortSignal.timeout(4000) });
+    if (r.ok) {
+      document.getElementById('api-status-indicator').querySelector('.api-dot').style.background = '#16a34a';
+      document.getElementById('api-status-text').textContent = 'API connected';
+    }
+  } catch {
+    document.getElementById('api-status-indicator').querySelector('.api-dot').style.background = '#dc2626';
+    document.getElementById('api-status-text').textContent = 'API offline';
+  }
+}
+
+// ══ LIVE UPDATES ══
+function startLiveUpdates() {
+  document.getElementById('live-badge').style.display = 'inline-flex';
+  if (liveInterval) clearInterval(liveInterval);
+  liveInterval = setInterval(() => {
+    if (!currentUser) return;
+    if (_activePage !== 'dashboard') return;
+    if (_dashboardRefreshInFlight) return;
+    _dashboardRefreshInFlight = true;
+    Promise.resolve(loadDashboard())
+      .catch(() => {})
+      .finally(() => { _dashboardRefreshInFlight = false; });
+  }, 5000);
+}
+
+function stopLiveUpdates() {
+  if (liveInterval) { clearInterval(liveInterval); liveInterval = null; }
+  document.getElementById('live-badge').style.display = 'none';
+}
+
+// ══ NAVIGATION ══
+function goto(page, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const pg = document.getElementById('page-' + page);
+  if (pg) pg.classList.add('active');
+  if (el) el.classList.add('active');
+  _activePage = page;
+  const titles = { dashboard:'Dashboard', agents:'AI Agents', disruptions:'Disruptions', compliance:'Compliance', approvals:'Pending Approvals', users:'User Management', audit:'Audit Log', activity:'Team Activity' };
+  document.getElementById('topbar-title').textContent = titles[page] || page;
+  if (!currentUser) return;
+  if (page === 'dashboard') loadDashboard();
+  else if (page === 'disruptions') loadDisruptions();
+  else if (page === 'compliance' || page === 'approvals') loadCompliance();
+  else if (page === 'audit') loadAudit();
+  else if (page === 'agents') { loadSummary().then(() => loadRipple()); }
+}
+
+// ══ DATA LOADERS ══
+async function loadSummary() {
+  try {
+    const s = await apiFetch('/summary').then(r => r.json());
+    window._summary = s;
+
+    const m = s?.metrics || {};
+
+    // Dashboard stats (backend is source of truth)
+    setText('stat-critical', m.critical_flags ?? '—');
+    setText('stat-patients', m.patients_at_risk ?? '—');
+    setText('stat-financial', m.financial_impact ?? m.financial_impact_inr ?? '—');
+    setText('stat-approved', m.actions_approved ?? m.approved ?? '—');
+    setText('stat-sub-flags', m.flags_subtitle ?? m.critical_flags_subtitle ?? '—');
+    setText('stat-sub-scenarios', m.scenarios_subtitle ?? m.patients_at_risk_subtitle ?? '—');
+    setText('stat-sub-compliance', m.compliance_subtitle ?? '—');
+    setText('run-id-label', m.run_id ?? s?.run_id ?? s?.last_run ?? '—');
+
+    // Pipeline (backend-driven)
+    setDot('pipe-dot-1', m.pipe_1_state ?? 'idle');
+    setDot('pipe-dot-2', m.pipe_2_state ?? 'idle');
+    setDot('pipe-dot-3', m.pipe_3_state ?? 'idle');
+    setDot('pipe-dot-4', m.pipe_4_state ?? 'idle');
+    setText('pipe-disruption-count', m.pipe_disruption_count ?? '—');
+    setText('pipe-ripple-count', m.pipe_ripple_count ?? '—');
+    setText('pipe-compliance-count', m.pipe_compliance_count ?? '—');
+    setText('pipe-approval-count', m.pipe_approval_count ?? '—');
+
+    // Nav badges (backend-driven)
+    setText('nav-badge-disruptions', m.nav_disruptions_badge ?? '—');
+    setText('nav-badge-compliance', m.nav_compliance_badge ?? '—');
+    setText('nav-badge-approvals', m.nav_approvals_badge ?? '—');
+    setText('nav-agents-badge', m.nav_agents_badge ?? '—');
+
+    // Pending approvals (backend-driven)
+    pendingCount = Number.isFinite(m.pending_approvals) ? m.pending_approvals : 0;
+    setText('pending-count', m.pending_approvals ?? '—');
+
+    // Agents page stats (backend-driven)
+    setText('agents-total-flags', m.total_flags ?? '—');
+    setText('agents-critical', m.critical_flags ?? '—');
+    setText('agents-scenarios', m.total_scenarios ?? '—');
+    setText('agents-run-id', m.run_id_short ?? m.run_id ?? '—');
+    setText('agents-run-sub', m.run_subtitle ?? '—');
+
+    renderLLMReasoningFromSummary(s);
+    return s;
+  } catch (e) {
+    console.warn('Summary failed', e);
+    return null;
+  }
+}
+
+async function loadDisruptions() {
+  try {
+    const d = await apiFetch('/disruptions/critical').then(r => r.json());
+    const flags = d?.flags || d?.disruptions || [];
+
+    const header = document.getElementById('disruptions-header');
+    if (header) header.textContent = d?.header_text || 'All Disruption Flags';
+
+    const pillsEl = document.getElementById('disruptions-pills');
+    if (pillsEl) {
+      pillsEl.innerHTML = '';
+      const pills = d?.pills || [];
+      pills.forEach(p => {
+        pillsEl.innerHTML += `<span class="pill ${pillClassFromStatus(p?.class || p?.severity || p?.status)}">${escapeHtml(p?.label ?? '—')}</span>`;
+      });
+    }
+
+    const dashTbody = document.getElementById('dash-disruption-tbody');
+    if (dashTbody) {
+      dashTbody.innerHTML = '';
+      if (!flags.length) {
+        dashTbody.innerHTML = '<tr><td colspan="4" class="empty-state"><div class="empty-state-icon">✅</div><div class="empty-state-title">No critical disruptions</div></td></tr>';
+      } else {
+        flags.slice(0, 5).forEach(f => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td><b>${escapeHtml(f.drug ?? '—')}</b></td><td>${escapeHtml(f.hospital_short ?? f.hospital ?? '—')}</td><td style="font-family:var(--mono);font-weight:600">${escapeHtml(f.days_left_display ?? f.days_left ?? f.days_remaining ?? '—')}</td><td><span class="pill ${pillClassFromStatus(f.severity)}">${escapeHtml(f.severity ?? '—')}</span></td>`;
+          dashTbody.appendChild(tr);
+        });
+      }
+    }
+
+    const fullTbody = document.getElementById('disruption-tbody');
+    if (fullTbody) {
+      fullTbody.innerHTML = '';
+      if (!flags.length) {
+        fullTbody.innerHTML = '<tr><td colspan="7" class="empty-state"><div class="empty-state-icon">✅</div><div class="empty-state-title">No critical disruptions detected</div><div>Run the pipeline to scan for signals</div></td></tr>';
+      } else {
+        flags.forEach(f => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td><span class="pill ${pillClassFromType(f.type)}">${escapeHtml(f.type ?? '—')}</span></td><td><b>${escapeHtml(f.drug ?? '—')}</b></td><td>${escapeHtml(f.hospital ?? '—')}</td><td>${escapeHtml(f.supplier ?? '—')}</td><td>${escapeHtml(f.supplier_country ?? f.country ?? '—')}</td><td style="font-family:var(--mono);font-weight:600">${escapeHtml(f.days_left_display ?? f.days_left ?? f.days_remaining ?? '—')}</td><td><span class="pill ${pillClassFromStatus(f.severity)}">${escapeHtml(f.severity ?? '—')}</span></td>`;
+          fullTbody.appendChild(tr);
+        });
+      }
+    }
+  } catch (e) { console.warn('Disruptions failed', e); }
+}
+
+async function loadRipple() {
+  try {
+    const r = await apiFetch('/ripple').then(r => r.json());
+    window._rippleData = r;
+
+    setText('agents-scenarios', r?.total_critical_scenarios ?? r?.total_scenarios ?? '—');
+    setText('agents-run-sub', r?.subtitle ?? '—');
+
+    // Agent exec log (backend-driven if provided)
+    const tbody = document.getElementById('agent-exec-tbody');
+    if (tbody) {
+      tbody.innerHTML = '';
+      const steps = r?.agent_execution_log || r?.execution_log || [];
+      if (!steps.length) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state"><div class="empty-state-title">Loading agent log…</div></td></tr>';
+      } else {
+        steps.forEach(step => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td style="font-family:var(--mono);font-weight:600">${escapeHtml(step.step ?? '—')}</td><td>${escapeHtml(step.agent ?? '—')}</td><td>${escapeHtml(step.action ?? '—')}</td><td>${escapeHtml(step.output ?? '—')}</td><td><span class="pill ${pillClassFromStatus(step.status ?? '—')}">${escapeHtml(step.status ?? '—')}</span></td>`;
+          tbody.appendChild(tr);
+        });
+      }
+    }
+
+    // Signal sources (backend-driven if provided)
+    const sigBody = document.getElementById('signal-sources-body');
+    if (sigBody) {
+      const rows = r?.signal_sources || [];
+      sigBody.innerHTML = rows.length
+        ? rows.map(x => `<div style="display:flex;align-items:center;justify-content:space-between;font-size:12px"><span style="color:var(--text2);font-weight:600">${escapeHtml(x.label ?? '—')}</span><span style="font-family:var(--mono);font-weight:600">${escapeHtml(x.value ?? '—')}</span></div>`).join('')
+        : '<div style="color:var(--text3);font-size:12px">—</div>';
+    }
+
+    // Cold chain (backend-driven if provided)
+    const ccBody = document.getElementById('cold-chain-body');
+    if (ccBody) {
+      const cityRisks = r?.cold_chain_city_risk || r?.cold_chain || [];
+      ccBody.innerHTML = cityRisks.length
+        ? cityRisks.map(c => `<div style="display:flex;justify-content:space-between;font-size:12px;align-items:center"><span style="font-weight:600">${escapeHtml(c.city ?? '—')}</span><div style="display:flex;gap:8px;align-items:center"><span style="font-family:var(--mono);font-weight:600">${escapeHtml(c.temp ?? c.temperature ?? '—')}</span><span class="pill ${pillClassFromStatus(c.risk ?? c.severity ?? '—')}">${escapeHtml(c.risk ?? c.severity ?? '—')}</span></div></div>`).join('')
+        : '<div style="color:var(--text3);font-size:12px">—</div>';
+    }
+  } catch (e) { console.warn('Ripple failed', e); }
+}
+
+async function loadCompliance() {
+  try {
+    const c = await apiFetch('/compliance').then(r => r.json());
+    const results = c.results || [];
+    const approved = c.approved || 0;
+    const warned   = c.approved_with_warnings || 0;
+    const blocked  = c.blocked || 0;
+    const checked  = c.total_checked || 0;
+
+    // Update compliance page stats
+    ['comp-stat-approved','comp-stat-warned','comp-stat-blocked','comp-stat-checked'].forEach((id, i) => {
+      setText(id, [approved, warned, blocked, checked][i]);
+    });
+
+    // Compliance table
+    const ctbody = document.getElementById('compliance-tbody');
+    if (ctbody) {
+      ctbody.innerHTML = '';
+      if (results.length === 0) {
+        ctbody.innerHTML = '<tr><td colspan="7" class="empty-state"><div class="empty-state-icon">📋</div><div class="empty-state-title">No compliance data yet</div><div>Run the pipeline first</div></td></tr>';
+      } else {
+        results.forEach(r => {
+          const sc  = r.compliance_status === 'APPROVED' ? 'pill-green' : r.compliance_status === 'BLOCKED' ? 'pill-red' : 'pill-amber';
+          const lbl = r.compliance_status === 'APPROVED_WITH_WARNINGS' ? 'WARNED' : r.compliance_status;
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td><b>${r.drug}</b></td><td>${r.hospital}</td><td style="font-family:var(--mono);font-size:10px;font-weight:600">${r.action?.replace('_REORDER','') || '—'}</td><td style="font-family:var(--mono)">${r.icd10_code || '—'}</td><td>${r.violations_count ?? '—'}</td><td>${r.warnings_count ?? '—'}</td><td><span class="pill ${sc}">${lbl}</span></td>`;
+          ctbody.appendChild(tr);
+        });
+      }
+    }
+
+    // Approvals list
+    const warnedItems  = results.filter(r => r.compliance_status === 'APPROVED_WITH_WARNINGS');
+    const approvalsList = document.getElementById('approvals-list');
+    pendingCount = warnedItems.length;
+    setText('pending-count', pendingCount);
+    setText('nav-badge-approvals', pendingCount > 0 ? `${pendingCount} pending` : '—');
+
+    if (approvalsList) {
+      approvalsList.innerHTML = '';
+      if (warnedItems.length === 0) {
+        approvalsList.innerHTML = '<div class="empty-state"><div class="empty-state-icon">✅</div><div class="empty-state-title">No pending approvals</div><div>All items are either approved or blocked</div></div>';
+      } else {
+        warnedItems.forEach((r, i) => {
+          const id = 'appr-live-' + i;
+          const label = r.drug + ' @ ' + r.hospital;
+          const rippleReports = window._rippleData?.ripple_reports || [];
+          const ripple = rippleReports.find(rp => rp.drug === r.drug && rp.hospital === r.hospital);
+          const patients = ripple?.patients_at_risk_display ?? ripple?.patients_at_risk ?? '';
+          const impactStr = ripple?.financial_impact_display ?? ripple?.financial_impact ?? '';
+          const daysLeft  = ripple?.days_left_display ?? ripple?.days_left ?? ripple?.days_remaining_display ?? '';
+          const supplier  = ripple?.supplier_display ?? (ripple?.current_supplier ? `${ripple.current_supplier} (${ripple.supplier_country || '—'})` : '');
+          const warnPills = (r.warnings || []).map(w => {
+            if (w.includes('NDPS'))  return '<span class="pill pill-red">NDPS Act</span>';
+            if (w.includes('CDSCO')) return '<span class="pill pill-blue">CDSCO approval</span>';
+            return `<span class="pill pill-gray">${w.slice(0, 32)}</span>`;
+          }).join('');
+          const div = document.createElement('div');
+          div.className = 'approval-card';
+          div.id = id;
+          div.innerHTML = `
+            <div class="approval-header">
+              <div><div class="approval-drug">${r.drug} — ${r.hospital}</div><div class="approval-hospital">${r.action} · ${supplier} · ${daysLeft}</div></div>
+              <span class="pill pill-amber">WARNED</span>
+            </div>
+            <div class="approval-meta">
+              ${warnPills}
+              <span class="pill pill-gray">${r.icd10_code || ''}</span>
+              ${patients ? `<span class="pill pill-purple">${escapeHtml(String(patients))}</span>` : ''}
+              ${impactStr ? `<span class="pill pill-amber">${impactStr}</span>` : ''}
+            </div>
+            <div class="approval-actions">
+              <button class="btn-approve" onclick="approveItem('${id}','${label}')">✓ Approve</button>
+              <button class="btn-block"   onclick="blockItem('${id}','${label}')">✕ Block</button>
+            </div>`;
+          approvalsList.appendChild(div);
+        });
+      }
+    }
+  } catch (e) { console.warn('Compliance failed', e); }
+}
+
+async function loadAudit() {
+  try {
+    const a = await apiFetch('/audit').then(r => r.json());
+    const wrap = document.getElementById('audit-entries');
+    const title = document.getElementById('audit-title');
+    if (title) title.textContent = `Immutable Audit Trail · ${a.run_id || '—'} · ${a.total_steps || 0} steps`;
+    if (wrap) {
+      wrap.innerHTML = '';
+      const trail = Array.isArray(a.audit_trail) ? a.audit_trail : [];
+      if (!trail.length) {
+        wrap.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📋</div><div class="empty-state-title">No audit entries</div></div>';
+      } else {
+        [...trail].reverse().forEach(entry => {
+          const div = document.createElement('div');
+          div.className = 'audit-entry';
+          const t = entry.timestamp ? entry.timestamp.slice(11, 19) : '—';
+          div.innerHTML = `<span class="audit-time">${escapeHtml(t)}</span><span class="audit-agent">${escapeHtml(entry.agent || 'System')}</span><span class="audit-msg">${escapeHtml(entry.decision || entry.action || '')}</span>`;
+          wrap.appendChild(div);
+        });
+      }
+    }
+  } catch (e) { console.warn('Audit failed', e); }
+}
+
+function renderLLMReasoningFromSummary(summary) {
+  const ao = summary?.agent_outputs || {};
+  updateReasoning('disruption', ao.disruption_analysis || '');
+  updateReasoning('ripple', ao.cascade_summary || '');
+  updateReasoning('compliance', ao.compliance_summary || '');
+  updateReasoning('playbook', ao.playbook_summary || '');
+
+  const host = document.getElementById('llm-reasoning');
+  if (!host) return;
+
+  const blocks = [
+    { title: 'Disruption analysis', text: ao.disruption_analysis },
+    { title: 'Cascade summary', text: ao.cascade_summary },
+    { title: 'Compliance summary', text: ao.compliance_summary },
+    { title: 'Playbook summary', text: ao.playbook_summary },
+  ].filter(b => (b.text || '').trim());
+
+  if (!blocks.length) {
+    host.innerHTML = '<div class="reasoning-text"><span class="reasoning-placeholder">—</span></div>';
+    return;
+  }
+
+  host.innerHTML = blocks.map(b => {
+    const safe = escapeHtml(b.text).replace(/\n/g, '<br>');
+    return `<div class="reasoning-text" style="margin-bottom:14px"><b>${escapeHtml(b.title)}</b><br><br>${safe}</div>`;
+  }).join('');
+}
+
+function updateReasoning(key, text) {
+  const el = document.getElementById('reasoning-' + key);
+  if (!el) return;
+  if (text && text.trim()) {
+    el.innerHTML = '<span class="reasoning-text">' + text.replace(/\n/g, '<br>') + '</span>';
+  }
+}
+
+function switchTab(key, el) {
+  document.querySelectorAll('.reasoning-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  ['disruption','ripple','compliance','playbook'].forEach(k => {
+    const panel = document.getElementById('reasoning-' + k);
+    if (panel) panel.style.display = k === key ? 'block' : 'none';
+  });
+}
+
+async function loadDashboard() {
+  await loadSummary();
+  await loadRipple();
+  await loadDisruptions();
+  await loadCompliance();
+  await loadAudit();
+}
+
+// ══ PIPELINE ══
+async function runPipeline() {
+  const runBtn = document.getElementById('run-btn');
+  runBtn.disabled = true;
+  runBtn.innerHTML = '<svg viewBox="0 0 12 12" fill="currentColor" style="animation:spin .7s linear infinite"><path d="M6 1a5 5 0 0 1 0 10A5 5 0 0 1 6 1zm0 1.5A3.5 3.5 0 1 0 6 9 3.5 3.5 0 0 0 6 2.5z" opacity=".3"/><path d="M6 1a5 5 0 0 1 5 5h-1.5A3.5 3.5 0 0 0 6 2.5V1z"/></svg> Running…';
+
+  const runId = 'RUN_' + Date.now().toString().slice(-6);
+  showToast('⚡ Pipeline triggered · ' + runId, 'success');
+  logActivity(currentUser?.name || 'System', currentUser?.role || 'auto', 'Triggered', 'Agent Pipeline', 'RUNNING', 'amber');
+  addAuditEntry('Manual', 'Pipeline triggered by ' + (currentUser?.name || 'System') + '. Run: ' + runId);
+  setText('run-id-label', runId);
+
+  // Set all dots to waiting
+  ['pipe-dot-1','pipe-dot-2','pipe-dot-3','pipe-dot-4'].forEach(id => setDot(id, 'waiting'));
+
+  try {
+    const r = await fetch('http://localhost:5678/webhook/run-agents', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ triggered_by: currentUser?.name || 'dashboard', run_id: runId }),
+      signal: AbortSignal.timeout(300000),
+    });
+    if (!r.ok) throw new Error('Webhook failed: ' + r.status);
+    showToast('Pipeline complete ✓', 'success');
+  } catch (err) {
+    showToast('Pipeline failed — webhook error', 'error');
+    addAuditEntry('System', 'Pipeline error: ' + (err?.message || String(err)));
+  }
+
+  // Update dot states
+  ['pipe-dot-1','pipe-dot-2','pipe-dot-3'].forEach(id => setDot(id, 'done'));
+  setDot('pipe-dot-4', 'waiting');
+
+  runBtn.disabled = false;
+  runBtn.innerHTML = '<svg viewBox="0 0 12 12" fill="currentColor"><path d="M2 2l8 4-8 4V2z"/></svg> Run Pipeline';
+
+  await loadDashboard();
+}
+
+// ══ APPROVAL ACTIONS ══
+function approveItem(id, label) {
+  const card = document.getElementById(id);
+  if (!card) return;
+  card.querySelector('.pill').textContent = 'APPROVED';
+  card.querySelector('.pill').className = 'pill pill-green';
+  card.querySelector('.approval-actions').innerHTML = `<span style="color:var(--green);font-size:12px;font-weight:700">✓ Approved by ${currentUser.name}</span>`;
+  card.style.opacity = '.5';
+  card.style.pointerEvents = 'none';
+  pendingCount = Math.max(0, pendingCount - 1);
+  setText('pending-count', pendingCount);
+  setText('nav-badge-approvals', pendingCount > 0 ? `${pendingCount} pending` : '—');
+  logActivity(currentUser.name, currentUser.role, 'Approved', label, 'SUCCESS', 'green');
+  addAuditEntry('Manual', `APPROVED: ${label} by ${currentUser.name}`);
+  showToast(label + ' — Approved', 'success');
+  const parts = label.split(' @ ');
+  apiFetch('/approve/' + encodeURIComponent(parts[0]) + '/' + encodeURIComponent(parts[1] || ''), { method: 'POST' }).catch(() => {});
+}
+
+function blockItem(id, label) {
+  const card = document.getElementById(id);
+  if (!card) return;
+  card.querySelector('.pill').textContent = 'BLOCKED';
+  card.querySelector('.pill').className = 'pill pill-red';
+  card.querySelector('.approval-actions').innerHTML = `<span style="color:var(--red);font-size:12px;font-weight:700">✕ Blocked by ${currentUser.name}</span>`;
+  card.style.opacity = '.4';
+  card.style.pointerEvents = 'none';
+  pendingCount = Math.max(0, pendingCount - 1);
+  setText('pending-count', pendingCount);
+  setText('nav-badge-approvals', pendingCount > 0 ? `${pendingCount} pending` : '—');
+  logActivity(currentUser.name, currentUser.role, 'Blocked', label, 'BLOCKED', 'red');
+  addAuditEntry('Manual', `BLOCKED: ${label} by ${currentUser.name}`);
+  showToast(label + ' — Blocked', 'error');
+  const parts = label.split(' @ ');
+  apiFetch('/block/' + encodeURIComponent(parts[0]) + '/' + encodeURIComponent(parts[1] || ''), { method: 'POST' }).catch(() => {});
+}
+
+// ══ USER MANAGEMENT ══
+function openModal() {
+  if (currentUser && currentUser.role !== 'admin' && currentUser.role !== 'manager') {
+    showToast('Only admins can add users', 'error'); return;
+  }
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+
+function addUser() {
+  const name     = document.getElementById('new-name').value.trim();
+  const email    = document.getElementById('new-email').value.trim();
+  const username = document.getElementById('new-username').value.trim();
+  const role     = document.getElementById('new-role').value;
+  const pass     = document.getElementById('new-pass').value;
+  if (!name || !email || !username || !pass) { showToast('Please fill all fields', 'error'); return; }
+  if (pass.length < 8) { showToast('Password must be at least 8 characters', 'error'); return; }
+  if (USERS[username]) { showToast('Username already exists', 'error'); return; }
+  const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+  const col = userColors[colorIdx % userColors.length]; colorIdx++;
+  USERS[username] = { pass, role, name, initials, color: col.bg, tc: col.tc };
+  const rc = roleColors[role] || 'gray';
+  const rl = roleLabels[role] || role.toUpperCase();
+  const row = document.createElement('div');
+  row.className = 'user-row';
+  row.innerHTML = `<div class="u-avatar" style="background:${col.bg};color:${col.tc}">${initials}</div><div><div class="u-name">${name}</div><div class="u-role">${role} · ${email}</div></div><div class="u-actions"><span class="pill pill-${rc}">${rl}</span><button class="u-btn">Edit</button><button class="u-btn danger" onclick="removeUser(this)">Remove</button></div>`;
+  document.getElementById('users-list').appendChild(row);
+  const cnt = document.getElementById('user-count');
+  cnt.textContent = parseInt(cnt.textContent) + 1;
+  logActivity(currentUser.name, currentUser.role, 'Added user', `${name} (${role})`, 'SUCCESS', 'green');
+  addAuditEntry('Manual', `User '${username}' registered by admin. Role: ${role}.`);
+  ['new-name','new-email','new-username','new-pass'].forEach(id => document.getElementById(id).value = '');
+  closeModal();
+  showToast(`${name} created successfully`, 'success');
+}
+
+function removeUser(btn) {
+  const row = btn.closest('.user-row');
+  const name = row.querySelector('.u-name').textContent;
+  row.style.opacity = '0'; row.style.transition = '.3s';
+  setTimeout(() => {
+    row.remove();
+    const c = document.getElementById('user-count');
+    c.textContent = parseInt(c.textContent) - 1;
+  }, 300);
+  showToast(`${name} removed`, 'success');
+  addAuditEntry('Manual', `User '${name}' removed by ${currentUser.name}.`);
+}
+
+// ══ ACTIVITY + AUDIT ══
+function logActivity(user, role, action, target, result, resultColor) {
+  const tbody = document.getElementById('activity-tbody');
+  // Clear empty state
+  const emptyRow = tbody.querySelector('.empty-state');
+  if (emptyRow) emptyRow.closest('tr')?.remove();
+
+  const tr = document.createElement('tr');
+  const now = new Date();
+  const t = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  const rc = roleColors[role] || 'gray';
+  const rl = roleLabels[role] || (role || 'SYSTEM').toUpperCase();
+  const colorMap = { green:'#16a34a', red:'#dc2626', amber:'#d97706', blue:'#1557e8' };
+  tr.innerHTML = `<td style="font-family:var(--mono);font-weight:600">${t}</td><td>${user}</td><td><span class="pill pill-${rc}">${rl}</span></td><td>${action}</td><td>${target}</td><td><span class="pill pill-${resultColor}">${result}</span></td>`;
+  tbody.insertBefore(tr, tbody.firstChild);
+
+  // Dashboard activity feed
+  const feed = document.getElementById('dash-activity-feed');
+  const emptyFeed = feed.querySelector('.empty-state');
+  if (emptyFeed) emptyFeed.remove();
+  const item = document.createElement('div');
+  item.className = 'activity-item';
+  const dotColor = colorMap[resultColor] || '#94a3b8';
+  item.innerHTML = `<div class="activity-dot" style="background:${dotColor};box-shadow:0 0 6px ${dotColor}88"></div><div><div class="activity-title">${target} — <b>${action}</b></div><div class="activity-meta"><span class="activity-user">${user}</span><span>just now</span></div></div>`;
+  feed.insertBefore(item, feed.firstChild);
+  while (feed.children.length > 8) feed.removeChild(feed.lastChild);
+}
+
+function addAuditEntry(agent, msg) {
+  const wrap = document.getElementById('audit-entries');
+  if (!wrap) return;
+  // Clear empty state
+  const emptyEl = wrap.querySelector('.empty-state');
+  if (emptyEl) wrap.innerHTML = '';
+  const now = new Date();
+  const t = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+  const div = document.createElement('div');
+  div.className = 'audit-entry';
+  div.innerHTML = `<span class="audit-time">${t}</span><span class="audit-agent">${agent}</span><span class="audit-msg">${msg}</span>`;
+  wrap.insertBefore(div, wrap.firstChild);
+}
+
+// ══ HELPERS ══
+function setText(id, val) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const next = (val === undefined || val === null || val === '') ? '—' : String(val);
+  const prev = el.textContent;
+  el.textContent = next;
+  if ((id === 'stat-patients' || id === 'stat-financial' || id === 'stat-critical') && prev !== next) {
+    flashUpdate(el);
+  }
+}
+function setDot(id, state) {
+  const el = document.getElementById(id);
+  if (el) el.className = 'pipe-dot ' + state;
+}
+function shortHospital(h) {
+  return (h || '').replace('Apollo Chennai','Apollo Ch').replace('Manipal Bangalore','Manipal Blr').replace('Fortis Mumbai','Fortis Mum').replace('KIMS Hyderabad','KIMS Hyd');
+}
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + (type || '');
+  setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+function flashUpdate(el) {
+  if (!el) return;
+  el.style.transition = 'transform 180ms ease, opacity 180ms ease';
+  el.style.transform = 'scale(1.04)';
+  el.style.opacity = '0.72';
+  setTimeout(() => {
+    el.style.transform = '';
+    el.style.opacity = '';
+  }, 180);
+}
+
+function pillClassFromStatus(status) {
+  const s = String(status || '').toUpperCase();
+  if (s.includes('CRIT') || s === 'BLOCKED' || s === 'FAIL' || s === 'ERROR') return 'pill-red';
+  if (s.includes('WARN') || s.includes('HIGH') || s === 'WAITING' || s === 'PENDING') return 'pill-amber';
+  if (s.includes('APPROV') || s.includes('OK') || s === 'DONE' || s === 'SUCCESS') return 'pill-green';
+  if (s.includes('RISK') || s.includes('INFO')) return 'pill-blue';
+  return 'pill-gray';
+}
+
+function pillClassFromType(type) {
+  const t = String(type || '').toUpperCase();
+  if (t.includes('FDA')) return 'pill-blue';
+  if (t.includes('COLD')) return 'pill-amber';
+  if (t.includes('LOW') || t.includes('STOCK')) return 'pill-purple';
+  return 'pill-gray';
+}
+
+function escapeHtml(str) {
+  return String(str ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+
+// Add spin keyframe
+const style = document.createElement('style');
+style.textContent = '@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}';
+document.head.appendChild(style);
+
+// ══ DRUG QUERY CHAT ══
+let selectedDrug = null;
+let chatOpen = false;
+
+function toggleChat() {
+  chatOpen = !chatOpen;
+  document.getElementById('chat-panel').classList.toggle('open', chatOpen);
+  if (chatOpen) document.getElementById('chat-input').focus();
+}
+
+function selectDrug(drug) {
+  selectedDrug = drug;
+  document.querySelectorAll('.chat-drug-pill').forEach(p => {
+    p.classList.toggle('active', p.textContent === drug);
+  });
+  document.getElementById('chat-input').value = 'Which hospitals are critical and what should I do right now?';
+  document.getElementById('chat-input').focus();
+}
+
+function appendChatMessage(role, content) {
+  const msgs = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'chat-msg ' + role;
+  div.innerHTML = '<div class="chat-bubble">' + content + '</div>';
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return div;
+}
+
+function showTyping() {
+  const msgs = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'chat-msg bot';
+  div.id = 'chat-typing';
+  div.innerHTML = '<div class="chat-bubble"><div class="chat-typing"><span></span><span></span><span></span></div></div>';
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function hideTyping() {
+  const t = document.getElementById('chat-typing');
+  if (t) t.remove();
+}
+
+function renderQueryResponse(data) {
+  const a = data.analysis || {};
+  const s = data.data_summary || {};
+  const sevColor = a.severity_level === 'CRITICAL' ? 'red' : a.severity_level === 'HIGH' ? 'amber' : 'green';
+  let html = `<span class="chat-metric ${sevColor}">${a.severity_level || 'UNKNOWN'}</span> <b>${data.drug}</b><br><br>`;
+  html += (a.direct_answer || '').replace(/\n/g, '<br>');
+  html += '<div class="chat-metric-row">';
+  if (s.total_patients_at_risk) html += `<span class="chat-metric purple">👥 ${s.total_patients_at_risk.toLocaleString()} patients</span>`;
+  if (s.total_financial_impact_inr) html += `<span class="chat-metric amber">₹${(s.total_financial_impact_inr / 100000).toFixed(1)}L</span>`;
+  if (s.emergency_reorders_needed) html += `<span class="chat-metric red">🚨 ${s.emergency_reorders_needed} emergency reorders</span>`;
+  if (s.compliance_blocked) html += `<span class="chat-metric red">🚫 ${s.compliance_blocked} blocked</span>`;
+  html += '</div>';
+  if (a.hospital_status && a.hospital_status.length) {
+    html += '<div class="chat-hospital-row">';
+    a.hospital_status.forEach(h => {
+      const dc = h.days_remaining <= 2 ? 'var(--red)' : h.days_remaining <= 5 ? '#d97706' : 'var(--green)';
+      const cs = h.compliance_status === 'BLOCKED' ? '🚫' : h.compliance_status === 'APPROVED_WITH_WARNINGS' ? '⚠️' : '✅';
+      html += `<div class="chat-hospital-item"><span class="chat-days" style="color:${dc};min-width:36px">${h.days_remaining}d</span><span style="flex:1;font-size:11px">${h.hospital}</span><span style="font-size:10px;color:var(--text3)">${h.recommended_action?.replace('_REORDER','')}</span><span title="${h.compliance_status}">${cs}</span></div>`;
+    });
+    html += '</div>';
+  }
+  if (a.immediate_actions && a.immediate_actions.length) {
+    html += '<br><b>Actions:</b><ol style="margin:4px 0 0 16px;font-size:11px;color:var(--text2)">';
+    a.immediate_actions.slice(0, 3).forEach(act => { html += `<li style="margin-bottom:3px">${act}</li>`; });
+    html += '</ol>';
+  }
+  if (a.cold_chain_warning) html += `<br><span class="chat-metric amber">🌡️ Cold chain: ${a.cold_chain_warning}</span>`;
+  if (a.compliance_blockers && a.compliance_blockers.length && a.compliance_blockers[0] !== 'NONE') {
+    html += `<br><span class="chat-metric red">⚠️ ${a.compliance_blockers[0]}</span>`;
+  }
+  return html;
+}
+
+async function sendQuery() {
+  const input = document.getElementById('chat-input');
+  const btn   = document.getElementById('chat-send-btn');
+  const question = input.value.trim();
+  if (!question) return;
+  const drugs = ['Heparin','Insulin','Morphine','Methotrexate','Vancomycin','Epinephrine','Dexamethasone','Cisplatin','Furosemide','Amoxicillin'];
+  let drug = selectedDrug;
+  if (!drug) {
+    const q = question.toLowerCase();
+    drug = drugs.find(d => q.includes(d.toLowerCase()));
+  }
+  if (!drug) {
+    appendChatMessage('bot', '⚠️ Please select a drug from the pills above, or mention a drug name in your question.');
+    return;
+  }
+  appendChatMessage('user', `<b>${drug}</b>: ${question}`);
+  input.value = '';
+  btn.disabled = true;
+  showTyping();
+  try {
+    const res = await apiFetch('/query', { method: 'POST', body: JSON.stringify({ drug, question }) });
+    const data = await res.json();
+    hideTyping();
+    if (!data.found) {
+      appendChatMessage('bot', '❌ ' + data.answer);
+    } else {
+      appendChatMessage('bot', renderQueryResponse(data));
+    }
+    logActivity(currentUser?.name || 'User', currentUser?.role || 'analyst', 'Queried', drug + ' supply status', 'SUCCESS', 'green');
+  } catch (err) {
+    hideTyping();
+    appendChatMessage('bot', '❌ Could not reach API. Make sure FastAPI is running and ngrok is active.<br><small style="color:var(--text3)">' + err.message + '</small>');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>
