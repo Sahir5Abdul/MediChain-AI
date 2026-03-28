@@ -100,7 +100,7 @@ Weather / Cold Chain Data                           ▼
 ## Project Structure
 
 ```
-medichain-ai/
+MediChain-AI/
 ├── main.py                                    # FastAPI backend + all 4 LLM agents
 ├── pipeline.py                                # Data ingestion pipeline
 ├── medichain_dashboard.html                   # Live frontend dashboard
@@ -123,8 +123,8 @@ medichain-ai/
 
 ### 1. Clone the repo
 ```bash
-git clone https://github.com/YOUR_USERNAME/medichain-ai.git
-cd medichain-ai
+git clone https://github.com/Sahir5Abdul/MediChain-AI.git
+cd MediChain-AI
 ```
 
 ### 2. Install Python dependencies
